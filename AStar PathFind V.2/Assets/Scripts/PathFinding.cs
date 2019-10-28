@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class PathFinding : MonoBehaviour
 {
-    public Transform seeker, target;
-    GridScript grid;
+    public Transform seeker, target; //Player and target postion
+    GridScript grid; //Grid reference
 
     
     private void Awake()
     {
-        grid = GetComponent<GridScript>();
+        grid = GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
     }
 
     private void Update()
@@ -22,24 +22,26 @@ public class PathFinding : MonoBehaviour
         Node startNode = grid.NodeFromWorldPoint(startPos);
         Node targetNode = grid.NodeFromWorldPoint(targetPos);
 
-        List<Node> openSet = new List<Node>();
-        HashSet<Node> closedSet = new HashSet<Node>();
-        openSet.Add(startNode);
+        List<Node> openSet = new List<Node>(); //List of nodes from "OpenSet" which are nodes that have not been checked yet
+        HashSet<Node> closedSet = new HashSet<Node>();//HashSet of nodes from "ClosedSet" which are nodes that have alreadt been checked
+        openSet.Add(startNode);//Adds the first node
 
         while (openSet.Count > 0)
         {
             Node currentNode = openSet[0];
             for (int i = 1; i < openSet.Count; i++)
             {
+                //Checks the node being evalutated to see if it's fCost is lower or if the fCost is the same AND the hCost is lower
+                //if so switches to that node
                 if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost)
                 {
                     currentNode = openSet[i];
                 }
             }
-
+            //Remove Current from the openset and add to the closed set
             openSet.Remove(currentNode);
             closedSet.Add(currentNode);
-
+            //If destination is found runs RetracePath function passing in both the start and target node
             if (currentNode == targetNode)
             {
                 RetracePath(startNode, targetNode);
@@ -52,12 +54,12 @@ public class PathFinding : MonoBehaviour
                 {
                     continue;
                 }
-
+                //Calculates movement cost to neighbour using the gCost and GetDistance function
                 int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
                 if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
                 {
-                    neighbour.gCost = newMovementCostToNeighbour;
-                    neighbour.hCost = GetDistance(neighbour, targetNode);
+                    neighbour.gCost = newMovementCostToNeighbour;//Set new g cost
+                    neighbour.hCost = GetDistance(neighbour, targetNode);//Calculates hCost with GetDistance function
                     neighbour.parent = currentNode;
 
                     if (!openSet.Contains(neighbour))
@@ -76,15 +78,17 @@ public class PathFinding : MonoBehaviour
 
         while (currentNode != startNode)
         {
-            path.Add(currentNode);
-            currentNode = currentNode.parent;
+            path.Add(currentNode);//Adds current node to the path
+            currentNode = currentNode.parent;//Parents node to retrace
         }
 
-        path.Reverse();
+        path.Reverse();//Reverses path as the path was retraced 
 
         grid.path = path;
 
     }
+
+    //Calculates distance from nodes ALLOWS FOR DIAGONAL
     int GetDistance(Node NodeA, Node NodeB)
     {
         int dstX = Mathf.Abs(NodeA.gridX - NodeB.gridX);
