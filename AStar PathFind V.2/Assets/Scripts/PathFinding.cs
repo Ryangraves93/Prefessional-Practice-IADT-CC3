@@ -5,6 +5,7 @@ using UnityEngine;
 public class PathFinding : MonoBehaviour
 {
     public Transform seeker, target; //Player and target postion
+
     GridScript grid; //Grid reference
 
     
@@ -16,6 +17,11 @@ public class PathFinding : MonoBehaviour
     private void Update()
     {
         FindPath(seeker.position, target.position);
+        if (Input.GetMouseButtonDown(0))
+        {
+            movePlayer();
+        }
+ 
     }
     void FindPath(Vector3 startPos, Vector3 targetPos)
     {
@@ -80,11 +86,20 @@ public class PathFinding : MonoBehaviour
         {
             path.Add(currentNode);//Adds current node to the path
             currentNode = currentNode.parent;//Parents node to retrace
+            
         }
 
-        path.Reverse();//Reverses path as the path was retraced 
-
+        path.Reverse();//Reverses path as the path was retraced
         grid.path = path;
+        Debug.Log(grid.path[0].worldPosition);
+        
+     
+    }
+
+    void movePlayer()
+    {
+        
+
 
     }
 
