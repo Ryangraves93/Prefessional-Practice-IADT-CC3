@@ -7,29 +7,56 @@ public class PathFinding : MonoBehaviour
     public Transform seeker, target; //Player and target postion
 
     GridScript grid; //Grid reference
-
+    int frameCount = 0;
     
+
     private void Awake()
     {
+        
         grid = GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
     }
 
-    private void Update()
+    public void Update()
     {
-        FindPath(seeker.position, target.position);
+       
         if (Input.GetMouseButtonDown(0))
         {
-            movePlayer();
+            playerMove();
         }
- 
+        int pathSize = grid.path.Count;
+        if (frameCount % 60 == 0)
+        {
+            frameCount = 0;
+            if (pathSize != 0)
+            {
+                Node lastNode = grid.path[pathSize - 1];
+                lastNode.worldPosition.y = seeker.position.y;
+                seeker.position = lastNode.worldPosition;
+                grid.path.Remove(lastNode);
+            }
+        }
+        frameCount++;
     }
-    void FindPath(Vector3 startPos, Vector3 targetPos)
+
+    public void playerMove()
     {
-        Node startNode = grid.NodeFromWorldPoint(startPos);
-        Node targetNode = grid.NodeFromWorldPoint(targetPos);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Node mouseNode = grid.NodeFromWorldPoint(hit.point);//Passes in the hit to be converted 
+            Debug.Log(mouseNode.worldPosition);
+            FindPath(grid.NodeFromWorldPoint(seeker.position),mouseNode);//Start point is seeker position end point is mouse position
+        }
+   
+    }
+    void FindPath(Node startNode, Node targetNode)
+    {
+        //Node startNode = grid.NodeFromWorldPoint(startPos);
+        //Node targetNode = grid.NodeFromWorldPoint(targetPos);
 
         List<Node> openSet = new List<Node>(); //List of nodes from "OpenSet" which are nodes that have not been checked yet
-        HashSet<Node> closedSet = new HashSet<Node>();//HashSet of nodes from "ClosedSet" which are nodes that have alreadt been checked
+        HashSet<Node> closedSet = new HashSet<Node>();//HashSet of nodes from "ClosedSet" which are nodes that have already been checked
         openSet.Add(startNode);//Adds the first node
 
         while (openSet.Count > 0)
@@ -89,18 +116,11 @@ public class PathFinding : MonoBehaviour
             
         }
 
-        path.Reverse();//Reverses path as the path was retraced
+        //path.Reverse();//Reverses path as the path was retraced
         grid.path = path;
-        Debug.Log(grid.path[0].worldPosition);
+        //Debug.Log(grid.path[0].worldPosition);
         
      
-    }
-
-    void movePlayer()
-    {
-        
-
-
     }
 
     //Calculates distance from nodes ALLOWS FOR DIAGONAL

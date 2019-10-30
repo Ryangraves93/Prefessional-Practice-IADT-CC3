@@ -37,6 +37,7 @@ public class GridScript : MonoBehaviour
                 Vector3 worldPoint = worldbottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
                 bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask));
                 grid[x, y] = new Node(walkable, worldPoint, x, y);
+                //Debug.Log(grid[x,y].gridX + "s");
             }
         }
     }
@@ -51,6 +52,10 @@ public class GridScript : MonoBehaviour
             {
                 if (x == 0 && y == 0)
                     continue;
+                    if(x*y != 0)
+                {
+                    continue;
+                }
 
                 int checkX = node.gridX + x;
                 int checkY = node.gridY + y;
