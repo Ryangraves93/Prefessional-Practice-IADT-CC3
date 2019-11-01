@@ -12,7 +12,6 @@ public class PathFinding : MonoBehaviour
 
     private void Awake()
     {
-        
         grid = GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
     }
 
@@ -38,6 +37,10 @@ public class PathFinding : MonoBehaviour
         frameCount++;
     }
 
+    //The PlayerMove() is used to convert a click on the screen into a grid on the map. It does this by using a raycast to see if the user has clicked on the screen, it then 
+    //uses unity's ScreenPointToRay function which is built into unity, to see where on screen the user click. It stores that information in a RayCastHit variable and then
+    //we assign the point to a Node class called mouseNode. Then I pass it into NodeFromWorldPoint where it converts it into a grid point, then we feed that into the
+    //FindPath() function to find the distance between the player and point clicked on the map.
     public void playerMove()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -50,6 +53,9 @@ public class PathFinding : MonoBehaviour
         }
    
     }
+
+    //FindPath() is going to be the function you use to calculate the distance between two points on the grid. This is important though, before you use it make sure you're 
+    //passing it in NODE classes and not vectors. If you need to convert a vector3 for it pass that into the gridFromWorldPoint() function on the gridscript.
     void FindPath(Node startNode, Node targetNode)
     {
         //Node startNode = grid.NodeFromWorldPoint(startPos);
@@ -103,7 +109,8 @@ public class PathFinding : MonoBehaviour
         }
     }
 
-
+    //RetracePath() allows yous to retrace the path between one point to another, you wouldn't really use this function as it's called in FindPath(Function above) and it's
+    //used to retrace the steps back from the path found.
     void RetracePath(Node startNode, Node EndNode)
     {
         List<Node> path = new List<Node>();
@@ -123,7 +130,7 @@ public class PathFinding : MonoBehaviour
      
     }
 
-    //Calculates distance from nodes ALLOWS FOR DIAGONAL
+    //Calculates distance from nodes 
     int GetDistance(Node NodeA, Node NodeB)
     {
         int dstX = Mathf.Abs(NodeA.gridX - NodeB.gridX);
