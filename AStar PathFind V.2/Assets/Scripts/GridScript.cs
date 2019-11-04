@@ -12,15 +12,25 @@ public class GridScript : MonoBehaviour
     Node[,] grid; //2D array of our Node class which will mark out the grid in nodes
     float nodeDiameter; //Diameter of node which is calulated and used to determine the size of grid x and y
     int gridSizeX, gridSizeY; //The x and y size of the grid
-
+    
     //On start this will set x and y values to our grid divided by the node diameter
     private void Start() 
     {
+        
+
         nodeDiameter = nodeRadius * 2;
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);//Determines how many nodes we can fit on the x axis
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);//Determines how many nodes we can fit on the y axis
         CreateGrid();
     }
+
+
+    public void Update()
+    {
+   
+    }
+
+
     //CreateGrid() will create a grid for the game that you can place on any surface. This grid can be manipulated in the inspector to any size you want by seting the
     //gridSizeX and gridSizeY 
     void CreateGrid()
@@ -63,7 +73,7 @@ public class GridScript : MonoBehaviour
    // N.W--> North-West(x-1, y-1)
    // S.E--> South-East(x+1, y+1)
    // S.W--> South-West(x+1, y-1)
-
+   //Checks negative x axis first
 
     public List<Node> GetNeighbours(Node node)
     {
@@ -92,6 +102,34 @@ public class GridScript : MonoBehaviour
 
         return neighbours;
     }
+
+    /*public List<Node> ShowAvailableMoves(Node node)
+    {
+        List<Node> neighbours = new List<Node>();
+
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x == 0 && y == 0)
+                    continue;
+                if (x * y != 0)
+                {
+                    continue;
+                }
+
+                int checkX = node.gridX + x;
+                int checkY = node.gridY + y;
+
+                if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
+                {
+                    neighbours.Add(grid[checkX, checkY]);
+                }
+            }
+        }
+
+        return neighbours;
+    }*/
 
     //NodeFromWorldPoint() - This function takes in any vector 3 and transfers it into any world point on our grid. Use this if you want to move anything grid.
     public Node NodeFromWorldPoint (Vector3 worldPostion)

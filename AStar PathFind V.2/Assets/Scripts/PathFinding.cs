@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PathFinding : MonoBehaviour
 {
-    public Transform seeker, target; //Player and target postion
+    public Transform player, target; //Player and target postion
 
     GridScript grid; //Grid reference
     int frameCount = 0;
@@ -29,8 +29,8 @@ public class PathFinding : MonoBehaviour
             if (pathSize != 0)
             {
                 Node lastNode = grid.path[pathSize - 1];
-                lastNode.worldPosition.y = seeker.position.y;
-                seeker.position = lastNode.worldPosition;
+                lastNode.worldPosition.y = player.position.y;
+                player.position = lastNode.worldPosition;
                 grid.path.Remove(lastNode);
             }
         }
@@ -49,7 +49,7 @@ public class PathFinding : MonoBehaviour
         {
             Node mouseNode = grid.NodeFromWorldPoint(hit.point);//Passes in the hit to be converted 
             Debug.Log(mouseNode.worldPosition);
-            FindPath(grid.NodeFromWorldPoint(seeker.position),mouseNode);//Start point is seeker position end point is mouse position
+            FindPath(grid.NodeFromWorldPoint(player.position),mouseNode);//Start point is seeker position end point is mouse position
         }
    
     }
