@@ -4,32 +4,65 @@ using UnityEngine;
 
 public class PathFinding : MonoBehaviour
 {
-    public Transform seeker, target; //Player and target postion
+    public Transform player, target; //Player and target postion
 
     GridScript grid; //Grid reference
-
+    int frameCount = 0;
     
+
     private void Awake()
     {
         grid = GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
     }
 
-    private void Update()
+    public void Update()
     {
-        FindPath(seeker.position, target.position);
+       
         if (Input.GetMouseButtonDown(0))
         {
-            movePlayer();
+            playerMove();
         }
- 
+        int pathSize = grid.path.Count;
+        if (frameCount % 60 == 0)
+        {
+            frameCount = 0;
+            if (pathSize != 0)
+            {
+                Node lastNode = grid.path[pathSize - 1];
+                lastNode.worldPosition.y = player.position.y;
+                player.position = lastNode.worldPosition;
+                grid.path.Remove(lastNode);
+            }
+        }
+        frameCount++;
     }
-    void FindPath(Vector3 startPos, Vector3 targetPos)
+
+    //The PlayerMove() is used to convert a click on the screen into a grid on the map. It does this by using a raycast to see if the user has clicked on the screen, it then 
+    //uses unity's ScreenPointToRay function which is built into unity, to see where on screen the user click. It stores that information in a RayCastHit variable and then
+    //we assign the point to a Node class called mouseNode. Then I pass it into NodeFromWorldPoint where it converts it into a grid point, then we feed that into the
+    //FindPath() function to find the distance between the player and point clicked on the map.
+    public void playerMove()
     {
-        Node startNode = grid.NodeFromWorldPoint(startPos);
-        Node targetNode = grid.NodeFromWorldPoint(targetPos);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Node mouseNode = grid.NodeFromWorldPoint(hit.point);//Passes in the hit to be converted 
+            Debug.Log(mouseNode.worldPosition);
+            FindPath(grid.NodeFromWorldPoint(player.position),mouseNode);//Start point is seeker position end point is mouse position
+        }
+   
+    }
+
+    //FindPath() is going to be the function you use to calculate the distance between two points on the grid. This is important though, before you use it make sure you're 
+    //passing it in NODE classes and not vectors. If you need to convert a vector3 for it pass that into the gridFromWorldPoint() function on the gridscript.
+    void FindPath(Node startNode, Node targetNode)
+    {
+        //Node startNode = grid.NodeFromWorldPoint(startPos);
+        //Node targetNode = grid.NodeFromWorldPoint(targetPos);
 
         List<Node> openSet = new List<Node>(); //List of nodes from "OpenSet" which are nodes that have not been checked yet
-        HashSet<Node> closedSet = new HashSet<Node>();//HashSet of nodes from "ClosedSet" which are nodes that have alreadt been checked
+        HashSet<Node> closedSet = new HashSet<Node>();//HashSet of nodes from "ClosedSet" which are nodes that have already been checked
         openSet.Add(startNode);//Adds the first node
 
         while (openSet.Count > 0)
@@ -76,7 +109,8 @@ public class PathFinding : MonoBehaviour
         }
     }
 
-
+    //RetracePath() allows yous to retrace the path between one point to another, you wouldn't really use this function as it's called in FindPath(Function above) and it's
+    //used to retrace the steps back from the path found.
     void RetracePath(Node startNode, Node EndNode)
     {
         List<Node> path = new List<Node>();
@@ -89,21 +123,14 @@ public class PathFinding : MonoBehaviour
             
         }
 
-        path.Reverse();//Reverses path as the path was retraced
+        //path.Reverse();//Reverses path as the path was retraced
         grid.path = path;
-        Debug.Log(grid.path[0].worldPosition);
+        //Debug.Log(grid.path[0].worldPosition);
         
      
     }
 
-    void movePlayer()
-    {
-        
-
-
-    }
-
-    //Calculates distance from nodes ALLOWS FOR DIAGONAL
+    //Calculates distance from nodes 
     int GetDistance(Node NodeA, Node NodeB)
     {
         int dstX = Mathf.Abs(NodeA.gridX - NodeB.gridX);

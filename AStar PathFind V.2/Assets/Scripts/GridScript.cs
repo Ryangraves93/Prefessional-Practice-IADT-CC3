@@ -12,16 +12,27 @@ public class GridScript : MonoBehaviour
     Node[,] grid; //2D array of our Node class which will mark out the grid in nodes
     float nodeDiameter; //Diameter of node which is calulated and used to determine the size of grid x and y
     int gridSizeX, gridSizeY; //The x and y size of the grid
-
+    
     //On start this will set x and y values to our grid divided by the node diameter
     private void Start() 
     {
+        
+
         nodeDiameter = nodeRadius * 2;
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);//Determines how many nodes we can fit on the x axis
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);//Determines how many nodes we can fit on the y axis
         CreateGrid();
     }
 
+
+    public void Update()
+    {
+   
+    }
+
+
+    //CreateGrid() will create a grid for the game that you can place on any surface. This grid can be manipulated in the inspector to any size you want by seting the
+    //gridSizeX and gridSizeY 
     void CreateGrid()
     {
         grid = new Node[gridSizeX, gridSizeY];//Passes in two variables into our 2D array of nodes 
@@ -35,11 +46,34 @@ public class GridScript : MonoBehaviour
             {
                 //Moves across the grid while x and y increment measuring in nodes
                 Vector3 worldPoint = worldbottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
-                bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask));
+                bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask));//Determines if a tile is walkable
                 grid[x, y] = new Node(walkable, worldPoint, x, y);
+                //Debug.Log(grid[x,y].gridX + "s");
             }
         }
     }
+    //GetNeighbours() is used to calculate what direction the alogrithm checks. Essentially what this means is, this function is responsible for what time of path we would create.
+    //Below i've added in a diagram that will help understand what I mean. The two for loops below determine what directions we check in. 
+    //Because we're not checking anything anything that isn't just North, South , East or West we can't go diagonally
+
+   //  N.W   N  N.E 
+   //     \  |  / 
+   //      \ | / 
+   // W----Cell----E 
+   //      / | \ 
+   //     /  |  \ 
+   //  S.W S  S.E
+
+   // Cell-->Popped Cell(x, y)
+   // N --> North(x-1, y)
+   // S --> South(x+1, y)
+   // E --> East(x, y+1)
+   // W --> West(x, y-1)
+   // N.E--> North-East(x-1, y+1)
+   // N.W--> North-West(x-1, y-1)
+   // S.E--> South-East(x+1, y+1)
+   // S.W--> South-West(x+1, y-1)
+   //Checks negative x axis first
 
     public List<Node> GetNeighbours(Node node)
     {
@@ -51,8 +85,12 @@ public class GridScript : MonoBehaviour
             {
                 if (x == 0 && y == 0)
                     continue;
+                    if(x*y != 0)
+                {
+                    continue;
+                }
 
-                int checkX = node.gridX + x;
+                int checkX = node.gridX + x; 
                 int checkY = node.gridY + y;
 
                 if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
@@ -65,7 +103,35 @@ public class GridScript : MonoBehaviour
         return neighbours;
     }
 
-    //Takes in a position and calculates the percentage of how far along the node is on the grid
+    /*public List<Node> ShowAvailableMoves(Node node)
+    {
+        List<Node> neighbours = new List<Node>();
+
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x == 0 && y == 0)
+                    continue;
+                if (x * y != 0)
+                {
+                    continue;
+                }
+
+                int checkX = node.gridX + x;
+                int checkY = node.gridY + y;
+
+                if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
+                {
+                    neighbours.Add(grid[checkX, checkY]);
+                }
+            }
+        }
+
+        return neighbours;
+    }*/
+
+    //NodeFromWorldPoint() - This function takes in any vector 3 and transfers it into any world point on our grid. Use this if you want to move anything grid.
     public Node NodeFromWorldPoint (Vector3 worldPostion)
     {
         //Calculates percent of node position on grid
@@ -79,7 +145,12 @@ public class GridScript : MonoBehaviour
         int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);
         return grid[x, y];
     }
+
+
     public List<Node> path;
+
+
+    //Only used for development purposes, it draws a visualisation of the grid on the game scene to show the span of the grid and the width of the node diameters.
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
