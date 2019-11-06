@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class playerCharacter : MonoBehaviour
 {
-
+    public Transform playerPos;
     public GameObject aStar;
     Node player;
 
@@ -15,18 +15,27 @@ public class playerCharacter : MonoBehaviour
         grid = aStar.GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
         //player = grid.NodeFromWorldPoint(grid.player.position);
         Debug.Log(player);
+        //player = grid.NodeFromWorldPoint(playerPos.position);
+        //playerPos.position = player.worldPosition;
+        Debug.Log(playerPos);
 
     }
 
-    // Update is called once per frame
-    void Update()
+    public void start()
     {
-        
+       
     }
 
     public void OnMouseOver()
     {
+
         List<Node> neighbours= grid.GetNeighbours(grid.NodeFromWorldPoint(grid.player.position));
+
+        foreach (Node n in neighbours)
+        {
+            n.parentTile.GetComponentInChildren<Renderer>().material.color = Color.black;
+        }
+        
         Debug.Log(neighbours[0].worldPosition);
                  
     }
