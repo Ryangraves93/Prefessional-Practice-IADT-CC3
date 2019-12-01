@@ -4,12 +4,21 @@ using UnityEngine;
 
 public class PathFinding : MonoBehaviour
 {
+    bool tileSelected = false;
+
+    private float startTime;
+
+    private float journeyLength;
+    public float lerpPercent = 1.0f;
     public Transform player, target; //Player and target postion
 
     GridScript grid; //Grid reference
     int frameCount = 0;
-    
 
+    private void Start()
+    {
+        startTime = Time.time;
+    }
     private void Awake()
     {
         grid = GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
@@ -20,7 +29,7 @@ public class PathFinding : MonoBehaviour
        
         if (Input.GetMouseButtonDown(0))
         {
-            playerMove();
+            selectTile();
         }
         int pathSize = grid.path.Count;
         if (frameCount % 60 == 0)
@@ -33,7 +42,7 @@ public class PathFinding : MonoBehaviour
                 player.position = lastNode.worldPosition;
                 grid.path.Remove(lastNode);
             }
-        }
+         }
         frameCount++;
     }
 
@@ -41,17 +50,37 @@ public class PathFinding : MonoBehaviour
     //uses unity's ScreenPointToRay function which is built into unity, to see where on screen the user click. It stores that information in a RayCastHit variable and then
     //we assign the point to a Node class called mouseNode. Then I pass it into NodeFromWorldPoint where it converts it into a grid point, then we feed that into the
     //FindPath() function to find the distance between the player and point clicked on the map.
-    public void playerMove()
+    public void selectTile()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        List<Node> playerNeighbours = grid.GetNeighbours(grid.NodeFromWorldPoint(player.position));
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            Node mouseNode = grid.NodeFromWorldPoint(hit.point);//Passes in the hit to be converted 
-            Debug.Log(mouseNode.worldPosition);
+            Node mouseNode = grid.NodeFromWorldPoint(hit.point);//Passes in the hit to be converted
+
+            /*foreach (Node n in playerNeighbours)
+            {
+                if (n.worldPosition == mouseNode.worldPosition)
+                {
+                    Debug.Log(n.worldPosition);
+                    journeyLength = Vector3.Distance(player.position, n.worldPosition);
+                    playerMove(n);
+                }
+            }*/
+            
+            //Debug.Log(mouseNode.worldPosition);
             FindPath(grid.NodeFromWorldPoint(player.position),mouseNode);//Start point is seeker position end point is mouse position
         }
    
+    }
+
+    public void playerMove(Node directionNode)
+    {
+        player.position = directionNode.worldPosition;
+        /*for (int i = 0; i <)
+            player.position = Vector3.Lerp(player.position, directionNode.worldPosition, lerpPercent);*/
+
     }
 
     //FindPath() is going to be the function you use to calculate the distance between two points on the grid. This is important though, before you use it make sure you're 
