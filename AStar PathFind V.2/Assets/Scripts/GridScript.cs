@@ -50,8 +50,8 @@ public class GridScript : MonoBehaviour
                 Vector3 worldPoint = worldbottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
                 bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask));//Determines if a tile is walkable
                 grid[x, y] = Instantiate(tilePrefab, worldPoint, Quaternion.identity);
-                grid[x,y].charliesHair = new Node(walkable, worldPoint, x, y);
-                grid[x, y].charliesHair.parentTile = grid[x, y];
+                grid[x,y].tileMap = new Node(walkable, worldPoint, x, y);
+                grid[x, y].tileMap.parentTile = grid[x, y];
                 //Debug.Log("hi");
                 //tiles[posX, posY] = new Node(walkable, worldPoint, x, y);
 
@@ -105,7 +105,7 @@ public class GridScript : MonoBehaviour
 
                 if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
                 {
-                    neighbours.Add(grid[checkX, checkY].charliesHair);
+                    neighbours.Add(grid[checkX, checkY].tileMap);
                 }
             }
         }
@@ -153,7 +153,7 @@ public class GridScript : MonoBehaviour
 
         int x = Mathf.RoundToInt((gridSizeX - 1) * percentX);
         int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);
-        return grid[x, y].charliesHair;
+        return grid[x, y].tileMap;
     }
 
 
@@ -170,17 +170,17 @@ public class GridScript : MonoBehaviour
             Node playerNode = NodeFromWorldPoint(player.position);
             foreach (GameTile n in grid)
             {
-                Gizmos.color = (n.charliesHair.walkable) ? Color.white : Color.red;
+                Gizmos.color = (n.tileMap.walkable) ? Color.white : Color.red;
                 if (path != null)
                 {
-                    if (path.Contains(n.charliesHair))
+                    if (path.Contains(n.tileMap))
                         Gizmos.color = Color.black;
                 }
-                if (playerNode == n.charliesHair)
+                if (playerNode == n.tileMap)
                 {
                     Gizmos.color = Color.cyan;
                 }
-                Gizmos.DrawCube(n.charliesHair.worldPosition, Vector3.one * (nodeDiameter - .1f));
+                Gizmos.DrawCube(n.tileMap.worldPosition, Vector3.one * (nodeDiameter - .1f));
             }
         }
     }

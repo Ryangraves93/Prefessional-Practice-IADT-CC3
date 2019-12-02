@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GameTile : MonoBehaviour
 {
-    public Node charliesHair;
+    public Node tileMap;
     // Start is called before the first frame update
     void Start()
     {
