@@ -9,7 +9,7 @@ public class PathFinding : MonoBehaviour
     private float startTime;
 
     private float journeyLength;
-    public float lerpPercent = 1.0f;
+    float lerpPercent = 1.0f;
     public Transform player, target; //Player and target postion
 
     GridScript grid; //Grid reference
@@ -27,11 +27,28 @@ public class PathFinding : MonoBehaviour
     public void Update()
     {
        
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            selectTile();
+            selectTile(1);
         }
-        int pathSize = grid.path.Count;
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            selectTile(-1);
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            selectTile(2);
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            selectTile(-2);
+        }
+
+
+
+
+
+            int pathSize = grid.path.Count;
         if (frameCount % 60 == 0)
         {
             frameCount = 0;
@@ -50,14 +67,47 @@ public class PathFinding : MonoBehaviour
     //uses unity's ScreenPointToRay function which is built into unity, to see where on screen the user click. It stores that information in a RayCastHit variable and then
     //we assign the point to a Node class called mouseNode. Then I pass it into NodeFromWorldPoint where it converts it into a grid point, then we feed that into the
     //FindPath() function to find the distance between the player and point clicked on the map.
-    public void selectTile()
-    {
 
+    public void selectTile(int dir)
+    {
+        
+        //W key + on z axis
+        if (dir == 1)
+        {
+            player.position = Vector3.MoveTowards(player.position, new Vector3(player.position.x,player.position.y,player.position.z + grid.nodeRadius*2), grid.nodeRadius * 2);
+        }
+        //A key - on x axis
+        if (dir == -1)
+        {
+            player.position = Vector3.MoveTowards(player.position, new Vector3(player.position.x - grid.nodeRadius * 2, player.position.y, player.position.z), grid.nodeRadius * 2);
+        }
+        //S key - on z axis
+        if (dir == 2)
+        {
+            player.position = Vector3.MoveTowards(player.position, new Vector3(player.position.x, player.position.y, player.position.z - grid.nodeRadius * 2), grid.nodeRadius * 2);
+        }
+        //D key + on z axis
+        if (dir == -2)
+        {
+            player.position = Vector3.MoveTowards(player.position, new Vector3(player.position.x + grid.nodeRadius * 2, player.position.y, player.position.z), grid.nodeRadius * 2);
+        }
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         List<Node> playerNeighbours = grid.GetNeighbours(grid.NodeFromWorldPoint(player.position));
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             Node mouseNode = grid.NodeFromWorldPoint(hit.point);//Passes in the hit to be converted
+
+
+
+
+
+
+
+
+
+
+
+
 
             /*foreach (Node n in playerNeighbours)
             {
@@ -69,7 +119,7 @@ public class PathFinding : MonoBehaviour
                 }
             }*/
             
-            //Debug.Log(mouseNode.worldPosition);
+            Debug.Log(mouseNode.worldPosition);
             FindPath(grid.NodeFromWorldPoint(player.position),mouseNode);//Start point is seeker position end point is mouse position
         }
    

@@ -396,7 +396,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 744084761}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.48965, y: -15.478753, z: 5.3104625}
+  m_LocalPosition: {x: -7.9, y: -15.478753, z: 1.01}
   m_LocalScale: {x: 2, y: 4, z: 3}
   m_Children: []
   m_Father: {fileID: 1264599377}
@@ -618,7 +618,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b24e5a10112d61844b4b5162e82b05c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lerpPercent: 0.5
   player: {fileID: 2131200349}
   target: {fileID: 0}
 --- !u!120 &934393613
@@ -824,7 +823,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1264599376}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.28965, y: 14.95, z: -5.4104624}
+  m_LocalPosition: {x: 16.28965, y: 15.99, z: -5.4104624}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 326752795}
@@ -848,7 +847,7 @@ GameObject:
   - component: {fileID: 1452124531}
   - component: {fileID: 1452124530}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

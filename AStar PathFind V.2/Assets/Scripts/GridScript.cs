@@ -12,7 +12,7 @@ public class GridScript : MonoBehaviour
     
 
     GameTile[,] grid; //2D array of our Node class which will mark out the grid in nodes
-    float nodeDiameter; //Diameter of node which is calulated and used to determine the size of grid x and y
+    public float nodeDiameter; //Diameter of node which is calulated and used to determine the size of grid x and y
     int gridSizeX, gridSizeY; //The x and y size of the grid
     int posX, posY;
     
@@ -23,12 +23,6 @@ public class GridScript : MonoBehaviour
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);//Determines how many nodes we can fit on the x axis
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);//Determines how many nodes we can fit on the y axis
         CreateGrid();
-    }
-
-
-    public void Update()
-    {
-   
     }
 
 
