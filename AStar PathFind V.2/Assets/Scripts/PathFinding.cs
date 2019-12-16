@@ -7,10 +7,11 @@ public class PathFinding : MonoBehaviour
     bool tileSelected = false;
 
     private float startTime;
-
-    private float journeyLength;
-    float lerpPercent = 1.0f;
+    public float speed = 20f;
     public Transform player, target; //Player and target postion
+
+    
+    
 
     GridScript grid; //Grid reference
     int frameCount = 0;
@@ -29,38 +30,41 @@ public class PathFinding : MonoBehaviour
        
         if (Input.GetKeyDown(KeyCode.W))
         {
-            selectTile(1);
+
+           StartCoroutine(selectTile(1));
         }
-        else if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A))
         {
-            selectTile(-1);
+            StartCoroutine(selectTile(-1));
         }
-        else if (Input.GetKeyDown(KeyCode.S))
+         if (Input.GetKeyDown(KeyCode.S))
         {
-            selectTile(2);
+            StartCoroutine(selectTile(2));
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+         if (Input.GetKeyDown(KeyCode.D))
         {
-            selectTile(-2);
+            StartCoroutine(selectTile(-2));
         }
 
+       // while (test == true)
+       // {
+//    selectTile(1);
+        //}
 
 
-
-
-            int pathSize = grid.path.Count;
-        if (frameCount % 60 == 0)
-        {
-            frameCount = 0;
-            if (pathSize != 0)
-            {
-                Node lastNode = grid.path[pathSize - 1];
-                lastNode.worldPosition.y = player.position.y;
-                player.position = lastNode.worldPosition;
-                grid.path.Remove(lastNode);
-            }
-         }
-        frameCount++;
+            //int pathSize = grid.path.Count;
+      //  if (frameCount % 60 == 0)
+      //  {
+           // frameCount = 0;
+           // if (pathSize != 0)
+           // {
+              //  Node lastNode = grid.path[pathSize - 1];
+             //   lastNode.worldPosition.y = player.position.y;
+           //     player.position = lastNode.worldPosition;
+           //     grid.path.Remove(lastNode);
+          //  }
+        // }
+       // frameCount++;
     }
 
     //The PlayerMove() is used to convert a click on the screen into a grid on the map. It does this by using a raycast to see if the user has clicked on the screen, it then 
@@ -68,44 +72,94 @@ public class PathFinding : MonoBehaviour
     //we assign the point to a Node class called mouseNode. Then I pass it into NodeFromWorldPoint where it converts it into a grid point, then we feed that into the
     //FindPath() function to find the distance between the player and point clicked on the map.
 
-    public void selectTile(int dir)
+    public IEnumerator selectTile(int dir)
     {
-        
+        float maxZAxis = (grid.gridWorldSize.y / 2) - 3;
+        float maxXAxis = grid.gridWorldSize.x / 2;
+        Debug.Log(-maxZAxis);
+        Debug.Log(maxXAxis);
         //W key + on z axis
         if (dir == 1)
         {
-            player.position = Vector3.MoveTowards(player.position, new Vector3(player.position.x,player.position.y,player.position.z + grid.nodeRadius*2), grid.nodeRadius * 2);
+            Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z + grid.nodeRadius * 2);
+            Node newNode = grid.NodeFromWorldPoint(newPos);
+
+            while (player.position.z != newPos.z)
+            {
+                if (newNode.walkable && (newPos.z < maxZAxis && newPos.z > -maxZAxis))
+                {
+                    player.position =  Vector3.MoveTowards(player.position, newPos, speed * Time.deltaTime);
+                    yield return null;
+                }   
+                else
+                {
+                    yield return null;
+                }
+            }
         }
         //A key - on x axis
         if (dir == -1)
         {
-            player.position = Vector3.MoveTowards(player.position, new Vector3(player.position.x - grid.nodeRadius * 2, player.position.y, player.position.z), grid.nodeRadius * 2);
+            Vector3 newPos = new Vector3(player.position.x - grid.nodeRadius * 2, player.position.y, player.position.z);
+            Node newNode = grid.NodeFromWorldPoint(newPos);
+
+            while (player.position.x != newPos.x)
+            {
+                if(newNode.walkable)
+                {
+                    player.position = Vector3.MoveTowards(player.position, newPos, speed * Time.deltaTime);
+                    yield return null;
+                }
+                else
+                {
+                    yield return null;
+                }
+            }
+            
         }
         //S key - on z axis
         if (dir == 2)
         {
-            player.position = Vector3.MoveTowards(player.position, new Vector3(player.position.x, player.position.y, player.position.z - grid.nodeRadius * 2), grid.nodeRadius * 2);
+            Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z - grid.nodeRadius * 2);
+            Node newNode = grid.NodeFromWorldPoint(newPos);
+            while (player.position.z != newPos.z)
+            {
+                if(newNode.walkable)
+                {
+                    player.position = Vector3.MoveTowards(player.position, newPos, speed * Time.deltaTime);
+                    yield return null;
+                }
+                else
+                {
+                    yield return null;
+                }
+            }
+
         }
-        //D key + on z axis
+        //D key + on x axis
         if (dir == -2)
         {
-            player.position = Vector3.MoveTowards(player.position, new Vector3(player.position.x + grid.nodeRadius * 2, player.position.y, player.position.z), grid.nodeRadius * 2);
+            Vector3 newPos = new Vector3(player.position.x + grid.nodeRadius * 2, player.position.y, player.position.z);
+            Node newNode = grid.NodeFromWorldPoint(newPos);
+            while (player.position.x != newPos.x)
+            {
+                if(newNode.walkable)
+                {
+                    player.position = player.position = Vector3.MoveTowards(player.position, newPos, speed * Time.deltaTime);
+                    yield return null;
+                }
+                else
+                {
+                    yield return null;
+                }
+            }
+            
         }
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         List<Node> playerNeighbours = grid.GetNeighbours(grid.NodeFromWorldPoint(player.position));
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        //if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            Node mouseNode = grid.NodeFromWorldPoint(hit.point);//Passes in the hit to be converted
-
-
-
-
-
-
-
-
-
-
+            //Node mouseNode = grid.NodeFromWorldPoint(hit.point);//Passes in the hit to be converted
 
 
 
@@ -119,8 +173,8 @@ public class PathFinding : MonoBehaviour
                 }
             }*/
             
-            Debug.Log(mouseNode.worldPosition);
-            FindPath(grid.NodeFromWorldPoint(player.position),mouseNode);//Start point is seeker position end point is mouse position
+            //Debug.Log(mouseNode.worldPosition);
+            //FindPath(grid.NodeFromWorldPoint(player.position),mouseNode);//Start point is seeker position end point is mouse position
         }
    
     }
