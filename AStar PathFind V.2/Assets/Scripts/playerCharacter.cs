@@ -14,13 +14,7 @@ public class playerCharacter : MonoBehaviour
     void Start()
     {
         grid = aStar.GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
-        /*player = grid.NodeFromWorldPoint(playerPos.position);
-        playerPos.position = player.worldPosition;*/
-        Debug.Log(player);
-        //player = grid.NodeFromWorldPoint(playerPos.position);
-        //playerPos.position = player.worldPosition;
-        Debug.Log(playerPos);
-        //playerPos.position = grid.NodeFromWorldPoint(player.worldPosition);
+        grid.NodeFromWorldPoint(playerPos.position);
 
     }
 

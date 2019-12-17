@@ -12,6 +12,7 @@ public class PathFinding : MonoBehaviour
 
     
     
+    
 
     GridScript grid; //Grid reference
     int frameCount = 0;
@@ -23,6 +24,7 @@ public class PathFinding : MonoBehaviour
     private void Awake()
     {
         grid = GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
+       
     }
 
     public void Update()
@@ -76,25 +78,35 @@ public class PathFinding : MonoBehaviour
     {
         float maxZAxis = (grid.gridWorldSize.y / 2) - 3;
         float maxXAxis = grid.gridWorldSize.x / 2;
-        Debug.Log(-maxZAxis);
-        Debug.Log(maxXAxis);
+
+        float nodeDiameter = grid.nodeRadius * 2;
+
+        bool test = false;
         //W key + on z axis
         if (dir == 1)
         {
-            Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z + grid.nodeRadius * 2);
-            Node newNode = grid.NodeFromWorldPoint(newPos);
+            while (test == false)
+             {
+                Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z + nodeDiameter);
+                Node newNode = grid.NodeFromWorldPoint(newPos);
 
-            while (player.position.z != newPos.z)
-            {
-                if (newNode.walkable && (newPos.z < maxZAxis && newPos.z > -maxZAxis))
-                {
-                    player.position =  Vector3.MoveTowards(player.position, newPos, speed * Time.deltaTime);
-                    yield return null;
-                }   
-                else
-                {
-                    yield return null;
-                }
+               // while (player.position.z != newPos.z && newNode.walkable)
+               // {
+                    if (newNode.walkable && (newPos.z < maxZAxis && newPos.z > -maxZAxis))
+                    {
+                        player.position = Vector3.MoveTowards(player.position, newPos, speed * Time.deltaTime);
+                        int i = 1;
+                        Debug.Log(i);
+                        i++;
+                        yield return null;
+                    }
+                    else if (!newNode.walkable)
+                    {
+                        test = true;
+                        yield return null;
+                        
+                    }
+                //}
             }
         }
         //A key - on x axis
