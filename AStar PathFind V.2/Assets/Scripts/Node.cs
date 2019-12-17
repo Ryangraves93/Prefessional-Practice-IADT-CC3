@@ -6,7 +6,6 @@ public class Node
 {
     public bool walkable;//Boolean for walkable tiles
     public Vector3 worldPosition;
-    public GameTile parentTile; 
 
     public int gCost;//How far away the node is from the starting node
     public int hCost;//How far away the node if from the end node
