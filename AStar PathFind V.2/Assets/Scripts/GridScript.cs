@@ -8,17 +8,16 @@ public class GridScript : MonoBehaviour
     public LayerMask unwalkableMask; //Mask used to identify objects which are unwalkable
     public Vector2 gridWorldSize; //Area in world cooardinates that the grid will cover
     public float nodeRadius; //Radius of each Node
-    public GameTile tilePrefab = default;
-    
 
-    GameTile[,] grid; //2D array of our Node class which will mark out the grid in nodes
-    public float nodeDiameter; //Diameter of node which is calulated and used to determine the size of grid x and y
-    public int gridSizeX, gridSizeY; //The x and y size of the grid
-    int posX, posY;
+    Node[,] grid; //2D array of our Node class which will mark out the grid in nodes
+    float nodeDiameter; //Diameter of node which is calulated and used to determine the size of grid x and y
+    int gridSizeX, gridSizeY; //The x and y size of the grid
     
     //On start this will set x and y values to our grid divided by the node diameter
     private void Start() 
     {
+        
+
         nodeDiameter = nodeRadius * 2;
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);//Determines how many nodes we can fit on the x axis
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);//Determines how many nodes we can fit on the y axis
@@ -26,12 +25,17 @@ public class GridScript : MonoBehaviour
     }
 
 
+    public void Update()
+    {
+   
+    }
+
+
     //CreateGrid() will create a grid for the game that you can place on any surface. This grid can be manipulated in the inspector to any size you want by seting the
     //gridSizeX and gridSizeY 
     void CreateGrid()
     {
-        grid = new GameTile[gridSizeX, gridSizeY];//Passes in two variables into our 2D array of nodes 
-       // tiles = new Node[posX, posY];
+        grid = new Node[gridSizeX, gridSizeY];//Passes in two variables into our 2D array of nodes 
         //Calculate the bottom left by setting original position to the center grid than subtracting and multiplying to reach bottom left
         //NOTE Z AXIS USED INSTEAD OF Y FOR FORWARD
         Vector3 worldbottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
@@ -43,20 +47,12 @@ public class GridScript : MonoBehaviour
                 //Moves across the grid while x and y increment measuring in nodes
                 Vector3 worldPoint = worldbottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
                 bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask));//Determines if a tile is walkable
-                grid[x, y] = Instantiate(tilePrefab, worldPoint, Quaternion.identity);
-                grid[x,y].tileMap = new Node(walkable, worldPoint, x, y);
-                grid[x, y].tileMap.parentTile = grid[x, y];
-                //Debug.Log("hi");
-                //tiles[posX, posY] = new Node(walkable, worldPoint, x, y);
-
-
-
-                
+                grid[x, y] = new Node(walkable, worldPoint, x, y);
                 //Debug.Log(grid[x,y].gridX + "s");
             }
         }
     }
-    //GetNeighbours() is used to calculate what direction the alogrithm checks. Essentially what this means is, this function is responsible for what type of path we would create.
+    //GetNeighbours() is used to calculate what direction the alogrithm checks. Essentially what this means is, this function is responsible for what time of path we would create.
     //Below i've added in a diagram that will help understand what I mean. The two for loops below determine what directions we check in. 
     //Because we're not checking anything anything that isn't just North, South , East or West we can't go diagonally
 
@@ -66,7 +62,7 @@ public class GridScript : MonoBehaviour
    // W----Cell----E 
    //      / | \ 
    //     /  |  \ 
-   //  S.W   S  S.E
+   //  S.W S  S.E
 
    // Cell-->Popped Cell(x, y)
    // N --> North(x-1, y)
@@ -99,7 +95,7 @@ public class GridScript : MonoBehaviour
 
                 if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
                 {
-                    neighbours.Add(grid[checkX, checkY].tileMap);
+                    neighbours.Add(grid[checkX, checkY]);
                 }
             }
         }
@@ -147,7 +143,7 @@ public class GridScript : MonoBehaviour
 
         int x = Mathf.RoundToInt((gridSizeX - 1) * percentX);
         int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);
-        return grid[x, y].tileMap;
+        return grid[x, y];
     }
 
 
@@ -159,22 +155,22 @@ public class GridScript : MonoBehaviour
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
 
-        if (grid != null)
+        if ( grid != null)
         {
             Node playerNode = NodeFromWorldPoint(player.position);
-            foreach (GameTile n in grid)
+            foreach (Node n in grid)
             {
-                Gizmos.color = (n.tileMap.walkable) ? Color.white : Color.red;
-                if (path != null)
+                Gizmos.color = (n.walkable) ? Color.white : Color.red;
+                if(path !=null)
                 {
-                    if (path.Contains(n.tileMap))
+                    if (path.Contains(n))
                         Gizmos.color = Color.black;
                 }
-                if (playerNode == n.tileMap)
+                if (playerNode == n)
                 {
                     Gizmos.color = Color.cyan;
                 }
-                Gizmos.DrawCube(n.tileMap.worldPosition, Vector3.one * (nodeDiameter - .1f));
+                Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
             }
         }
     }
