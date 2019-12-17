@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*[ExecuteInEditMode]*/
 public class GridScript : MonoBehaviour
 {
     public Transform player; //Reference for the player
@@ -9,6 +10,7 @@ public class GridScript : MonoBehaviour
     public Vector2 gridWorldSize; //Area in world cooardinates that the grid will cover
     public float nodeRadius; //Radius of each Node
     public GameTile tilePrefab = default;
+    public GameObject board;
     
 
     GameTile[,] grid; //2D array of our Node class which will mark out the grid in nodes
@@ -31,6 +33,8 @@ public class GridScript : MonoBehaviour
     void CreateGrid()
     {
         grid = new GameTile[gridSizeX, gridSizeY];//Passes in two variables into our 2D array of nodes 
+        board.transform.localScale = new Vector3(gridSizeX*nodeDiameter+3, board.transform.localScale.y, gridSizeY * nodeDiameter+3);
+        board.transform.position = new Vector3(0.5f, -0.8f, 0.5f);
        // tiles = new Node[posX, posY];
         //Calculate the bottom left by setting original position to the center grid than subtracting and multiplying to reach bottom left
         //NOTE Z AXIS USED INSTEAD OF Y FOR FORWARD
@@ -40,10 +44,12 @@ public class GridScript : MonoBehaviour
         {
             for (int y = 0; y < gridSizeX; y++)
             {
+                tilePrefab.transform.localScale = new Vector3(nodeDiameter,tilePrefab.transform.localScale.y,nodeDiameter);
                 //Moves across the grid while x and y increment measuring in nodes
                 Vector3 worldPoint = worldbottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
                 bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask));//Determines if a tile is walkable
                 grid[x, y] = Instantiate(tilePrefab, worldPoint, Quaternion.identity);
+              
                 grid[x,y].tileMap = new Node(walkable, worldPoint, x, y);
                 grid[x, y].tileMap.parentTile = grid[x, y];
                 //Debug.Log("hi");
@@ -155,7 +161,7 @@ public class GridScript : MonoBehaviour
 
 
     //Only used for development purposes, it draws a visualisation of the grid on the game scene to show the span of the grid and the width of the node diameters.
-    private void OnDrawGizmos()
+/*    private void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
 
@@ -177,5 +183,5 @@ public class GridScript : MonoBehaviour
                 Gizmos.DrawCube(n.tileMap.worldPosition, Vector3.one * (nodeDiameter - .1f));
             }
         }
-    }
+    }*/
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PathFinding : MonoBehaviour
 {
-    bool tileSelected = false;
+    //bool tileSelected = false;
 
-    private float startTime;
+   // private float startTime;
     public float speed = 20f;
     public Transform player, target; //Player and target postion
 
@@ -15,11 +15,11 @@ public class PathFinding : MonoBehaviour
     
 
     GridScript grid; //Grid reference
-    int frameCount = 0;
+   // int frameCount = 0;
 
     private void Start()
     {
-        startTime = Time.time;
+        //startTime = Time.time;
     }
     private void Awake()
     {
@@ -32,20 +32,19 @@ public class PathFinding : MonoBehaviour
        
         if (Input.GetKeyDown(KeyCode.W))
         {
-
-           StartCoroutine(selectTile(1));
+           selectTile(1,0);
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
-            StartCoroutine(selectTile(-1));
+            selectTile(-1,0);
         }
          if (Input.GetKeyDown(KeyCode.S))
         {
-            StartCoroutine(selectTile(2));
+           selectTile(2,0);
         }
          if (Input.GetKeyDown(KeyCode.D))
         {
-            StartCoroutine(selectTile(-2));
+            selectTile(-2,0);
         }
 
        // while (test == true)
@@ -74,99 +73,90 @@ public class PathFinding : MonoBehaviour
     //we assign the point to a Node class called mouseNode. Then I pass it into NodeFromWorldPoint where it converts it into a grid point, then we feed that into the
     //FindPath() function to find the distance between the player and point clicked on the map.
 
-    public IEnumerator selectTile(int dir)
+    public void selectTile(int dir, int stepSize)
     {
-        float maxZAxis = (grid.gridWorldSize.y / 2) - 3;
-        float maxXAxis = grid.gridWorldSize.x / 2;
+        var stepCount = stepSize+1; //stores the variable for number of tiles to move
 
-        float nodeDiameter = grid.nodeRadius * 2;
-
-        bool test = false;
-        //W key + on z axis
         if (dir == 1)
         {
-            while (test == false)
-             {
-                Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z + nodeDiameter);
-                Node newNode = grid.NodeFromWorldPoint(newPos);
 
-               // while (player.position.z != newPos.z && newNode.walkable)
-               // {
-                    if (newNode.walkable && (newPos.z < maxZAxis && newPos.z > -maxZAxis))
+                Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z + grid.nodeDiameter*stepCount); //check next tile in direction desired * number of tiles
+                Node newNode = grid.NodeFromWorldPoint(newPos); //get the node
+
+                    if (newNode.walkable && stepCount <= grid.gridSizeX) // if the node is vacant and were not moving an entire grid length
                     {
-                        player.position = Vector3.MoveTowards(player.position, newPos, speed * Time.deltaTime);
-                        int i = 1;
-                        Debug.Log(i);
-                        i++;
-                        yield return null;
+                    selectTile(dir, stepCount); // call the function again with the increased step count/size
                     }
-                    else if (!newNode.walkable)
+                    else
                     {
-                        test = true;
-                        yield return null;
-                        
+                    Vector3 lastPos = new Vector3(player.position.x, player.position.y, player.position.z + grid.nodeDiameter * (stepCount - 1)); // put the player on the node before this one if its unwalkable.
+                     Node lastNode = grid.NodeFromWorldPoint(lastPos);
+                     player.position = lastNode.worldPosition; // to be replaced with call to coroutine (lerp fucntion)
+                     Debug.Log("bump");    
                     }
-                //}
-            }
-        }
+         }
+        
         //A key - on x axis
         if (dir == -1)
         {
-            Vector3 newPos = new Vector3(player.position.x - grid.nodeRadius * 2, player.position.y, player.position.z);
+            Vector3 newPos = new Vector3(player.position.x - grid.nodeDiameter*stepCount, player.position.y, player.position.z);
             Node newNode = grid.NodeFromWorldPoint(newPos);
 
-            while (player.position.x != newPos.x)
+            if (newNode.walkable && stepCount <= grid.gridSizeX)
             {
-                if(newNode.walkable)
-                {
-                    player.position = Vector3.MoveTowards(player.position, newPos, speed * Time.deltaTime);
-                    yield return null;
-                }
-                else
-                {
-                    yield return null;
-                }
+                selectTile(dir, stepCount);
             }
-            
+            else
+            {
+                Vector3 lastPos = new Vector3(player.position.x - grid.nodeDiameter * (stepCount - 1), player.position.y, player.position.z);
+                Node lastNode = grid.NodeFromWorldPoint(lastPos);
+
+                //implement coRoutine to lerp playerPos to lastNodePos * speed
+
+                player.position = lastNode.worldPosition;
+                Debug.Log("bump");
+            }
+
         }
         //S key - on z axis
         if (dir == 2)
         {
-            Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z - grid.nodeRadius * 2);
+            Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z - grid.nodeDiameter * stepCount);
             Node newNode = grid.NodeFromWorldPoint(newPos);
-            while (player.position.z != newPos.z)
+
+            if (newNode.walkable && stepCount <= grid.gridSizeX)
             {
-                if(newNode.walkable)
-                {
-                    player.position = Vector3.MoveTowards(player.position, newPos, speed * Time.deltaTime);
-                    yield return null;
-                }
-                else
-                {
-                    yield return null;
-                }
+                selectTile(dir, stepCount);
+            }
+            else
+            {
+                Vector3 lastPos = new Vector3(player.position.x, player.position.y, player.position.z - grid.nodeDiameter * (stepCount - 1));
+                Node lastNode = grid.NodeFromWorldPoint(lastPos);
+                player.position = lastNode.worldPosition;
+                Debug.Log("bump");
             }
 
         }
         //D key + on x axis
         if (dir == -2)
         {
-            Vector3 newPos = new Vector3(player.position.x + grid.nodeRadius * 2, player.position.y, player.position.z);
+            Vector3 newPos = new Vector3(player.position.x + grid.nodeDiameter * stepCount, player.position.y, player.position.z);
             Node newNode = grid.NodeFromWorldPoint(newPos);
-            while (player.position.x != newPos.x)
+
+            if (newNode.walkable && stepCount <= grid.gridSizeX)
             {
-                if(newNode.walkable)
-                {
-                    player.position = player.position = Vector3.MoveTowards(player.position, newPos, speed * Time.deltaTime);
-                    yield return null;
-                }
-                else
-                {
-                    yield return null;
-                }
+                selectTile(dir, stepCount);
             }
-            
+            else
+            {
+                Vector3 lastPos = new Vector3(player.position.x + grid.nodeDiameter * (stepCount-1), player.position.y, player.position.z);
+                Node lastNode = grid.NodeFromWorldPoint(lastPos);
+                player.position = lastNode.worldPosition;
+                Debug.Log("bump");
+            }
+
         }
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         List<Node> playerNeighbours = grid.GetNeighbours(grid.NodeFromWorldPoint(player.position));
         //if (Physics.Raycast(ray, out RaycastHit hit))
