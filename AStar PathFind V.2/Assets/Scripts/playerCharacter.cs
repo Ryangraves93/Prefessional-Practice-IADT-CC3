@@ -49,4 +49,14 @@ public class playerCharacter : MonoBehaviour
     {
         displayMovableDirection(false);
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+            Debug.Log("Kill");
+            Destroy(collision.gameObject);
+        }
+
+    }
 }
