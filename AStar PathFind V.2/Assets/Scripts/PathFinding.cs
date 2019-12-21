@@ -10,10 +10,11 @@ public class PathFinding : MonoBehaviour
     public float speed = 50f;
     public Transform player, target; //Player and target postion
     public bool moveAllowed = true;
+    public int dir;
     public Vector3 destination;
-
-
-    enemyScript enemy;
+    public GameObject enemies;
+    public GameObject destinationObject;
+    enemyScript[] enemyList;
     GridScript grid; //Grid reference
    // int frameCount = 0;
 
@@ -27,9 +28,9 @@ public class PathFinding : MonoBehaviour
     private void Awake()
     {
 
-        
+        enemyList = enemies.GetComponentsInChildren<enemyScript>();
         grid = GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
-        enemy = GetComponent<enemyScript>();
+        //enemy = enemies.GetComponent<enemyScript>();
     }
 
     public void Update()
@@ -37,22 +38,45 @@ public class PathFinding : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.W) && moveAllowed == true)
         {
+            dir = 1;
            selectTile(1,0);
         }
-        if (Input.GetKeyDown(KeyCode.A) && moveAllowed == true)
+        if (Input.GetKeyDown(KeyCode.D) && moveAllowed == true)
         {
-            selectTile(-1,0);
+            dir = 2;
+            selectTile(2, 0);
         }
          if (Input.GetKeyDown(KeyCode.S) && moveAllowed == true)
         {
-           selectTile(2,0);
+            
+            dir = -1;
+            selectTile(-1, 0);
         }
-         if (Input.GetKeyDown(KeyCode.D) && moveAllowed == true)
+         if (Input.GetKeyDown(KeyCode.A) && moveAllowed == true)
         {
+            dir = -2;
             selectTile(-2,0);
         }
 
+        if (dir == 1)
+        {
+            player.rotation = Quaternion.Euler(0, 180, 0);
+        }
+        if (dir == -1)
+        {
+            player.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        if (dir == 2)
+        {
+            player.rotation = Quaternion.Euler(0, 270, 0);
+        }
+        if (dir == -2)
+        {
+            player.rotation = Quaternion.Euler(0, 90, 0);
+        }
+
         player.position = Vector3.MoveTowards(player.position, destination, Time.deltaTime * speed);
+        destinationObject.transform.position = destination;
 
         if (Vector3.Distance(player.position, destination) < 0.01f)
         {
@@ -64,7 +88,6 @@ public class PathFinding : MonoBehaviour
     public void selectTile(int dir, int stepSize)
     {
         var stepCount = stepSize+1; //stores the variable for number of tiles to move
-
         moveAllowed = false;
 
         if (dir == 1)
@@ -86,7 +109,7 @@ public class PathFinding : MonoBehaviour
          }
         
         //A key - on x axis
-        if (dir == -1)
+        if (dir == -2)
         {
             Vector3 newPos = new Vector3(player.position.x - grid.nodeDiameter*stepCount, player.position.y, player.position.z);
             Node newNode = grid.NodeFromWorldPoint(newPos);
@@ -104,7 +127,7 @@ public class PathFinding : MonoBehaviour
 
         }
         //S key - on z axis
-        if (dir == 2)
+        if (dir == -1)
         {
             Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z - grid.nodeDiameter * stepCount);
             Node newNode = grid.NodeFromWorldPoint(newPos);
@@ -122,7 +145,7 @@ public class PathFinding : MonoBehaviour
 
         }
         //D key + on x axis
-        if (dir == -2)
+        if (dir == 2)
         {
             Vector3 newPos = new Vector3(player.position.x + grid.nodeDiameter * stepCount, player.position.y, player.position.z);
             Node newNode = grid.NodeFromWorldPoint(newPos);
@@ -142,13 +165,23 @@ public class PathFinding : MonoBehaviour
             }
             
         }
-        enemy.enemyStep();
+        //enemy.enemyStep();
+
+    }
+
+    public void enemyMove()
+    {
+        foreach (enemyScript emy in enemyList)
+        {
+            emy.enemyStep();
+        }
+
     }
 
 
     //FindPath() is going to be the function you use to calculate the distance between two points on the grid. This is important though, before you use it make sure you're 
     //passing it in NODE classes and not vectors. If you need to convert a vector3 for it pass that into the gridFromWorldPoint() function on the gridscript.
-    void FindPath(Node startNode, Node targetNode)
+    /*void FindPath(Node startNode, Node targetNode)
     {
         //Node startNode = grid.NodeFromWorldPoint(startPos);
         //Node targetNode = grid.NodeFromWorldPoint(targetPos);
@@ -220,7 +253,7 @@ public class PathFinding : MonoBehaviour
         //Debug.Log(grid.path[0].worldPosition);
         
      
-    }
+    }*/
 
     //Calculates distance from nodes 
     int GetDistance(Node NodeA, Node NodeB)

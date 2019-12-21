@@ -42,7 +42,7 @@ public class GridScript : MonoBehaviour
 
         for (int x = 0; x < gridSizeX; x++)
         {
-            for (int y = 0; y < gridSizeX; y++)
+            for (int y = 0; y < gridSizeY; y++)
             {
                 tilePrefab.transform.localScale = new Vector3(nodeDiameter,tilePrefab.transform.localScale.y,nodeDiameter);
                 //Moves across the grid while x and y increment measuring in nodes

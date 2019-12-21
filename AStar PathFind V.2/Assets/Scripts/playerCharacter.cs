@@ -8,15 +8,19 @@ public class playerCharacter : MonoBehaviour
     public GameObject aStar;
     Node player;
     public Material boardMaterial;
-
+    public GameObject enemies;
+    public int firstCol = 0;
+    enemyScript[] enemyList;
     GridScript grid;
+
     // Start is called before the first frame update
     void Start()
     {
         grid = aStar.GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
         grid.NodeFromWorldPoint(playerPos.position);
+        enemyList = enemies.GetComponentsInChildren<enemyScript>();
 
-    }
+}
 
     void displayMovableDirection (bool isHovered)
     {
@@ -54,9 +58,34 @@ public class playerCharacter : MonoBehaviour
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            Debug.Log("Kill");
-            Destroy(collision.gameObject);
+            enemyScript enemy = collision.gameObject.GetComponent<enemyScript>();
+            PathFinding path = aStar.GetComponent<PathFinding>();
+
+            if (enemy.dir != path.dir * -1)
+            {
+                Debug.Log("Kill");
+                collision.gameObject.SetActive(false);
+            }
+
+            else
+            {
+                Debug.Log("player die");
+            }
+        }
+
+        if (collision.gameObject.tag == "dest")
+        {
+            if (firstCol > 0)
+            {
+                foreach (enemyScript emy in enemyList)
+                {
+                    emy.enemyStep();
+                }
+            }
+            firstCol++;
         }
 
     }
+
+
 }
