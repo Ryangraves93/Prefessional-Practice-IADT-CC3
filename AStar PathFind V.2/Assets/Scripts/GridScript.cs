@@ -13,7 +13,7 @@ public class GridScript : MonoBehaviour
     public GameObject board;
     
 
-    GameTile[,] grid; //2D array of our Node class which will mark out the grid in nodes
+    public GameTile[,] grid; //2D array of our Node class which will mark out the grid in nodes
     public float nodeDiameter; //Diameter of node which is calulated and used to determine the size of grid x and y
     public int gridSizeX, gridSizeY; //The x and y size of the grid
     int posX, posY;

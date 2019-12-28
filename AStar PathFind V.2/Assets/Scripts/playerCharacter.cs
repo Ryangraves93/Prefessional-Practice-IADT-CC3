@@ -4,25 +4,35 @@ using UnityEngine;
 
 public class playerCharacter : MonoBehaviour
 {
-    public Transform playerPos;
-    public GameObject aStar;
-    Node player;
-    public Material boardMaterial;
-    public GameObject enemies;
-    public int firstCol = 0;
-    enemyScript[] enemyList;
-    GridScript grid;
+    public Transform playerPos; // reference to player position
+    public GameObject aStar; // reference to grid object
+    public GameObject enemies; // reference to enemies container
+    bool firstCol = false; // bool to prevent initial snap to grid counting as a collision
+    enemyScript[] enemyList; // array of enemies
+    GridScript grid; // grid reference
+    public GameObject endGameOverlay; //UI components
+    public GameObject nextLevel;
+    public GameObject loseText;
+    public GameObject winText;
 
-    // Start is called before the first frame update
+    int enemyCount; // number of enemies
+
     void Start()
     {
-        grid = aStar.GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
-        grid.NodeFromWorldPoint(playerPos.position);
-        enemyList = enemies.GetComponentsInChildren<enemyScript>();
+        grid = aStar.GetComponent<GridScript>();
+        enemyList = enemies.GetComponentsInChildren<enemyScript>(); // script references
+        enemyCount = enemyList.Length; //initialize number of enemies
+    }
 
-}
+    private void Update()
+    {
+        foreach (GameTile n in grid.grid)
+        {
+            n.tileMap.parentTile.GetComponentInChildren<Renderer>().material.color = Color.white; // each frame set all to base colour
+        }
+    }
 
-    void displayMovableDirection (bool isHovered)
+/*    void displayMovableDirection (bool isHovered)
     {
         List<Node> neighbours = grid.GetNeighbours(grid.NodeFromWorldPoint(grid.player.position));
 
@@ -40,8 +50,8 @@ public class playerCharacter : MonoBehaviour
                 n.parentTile.GetComponentInChildren<Renderer>().material.color = Color.white;
             }
         }
-    }
-    public void OnMouseOver()
+    }*/
+/*    public void OnMouseOver()
     {
 
         displayMovableDirection(true);
@@ -52,16 +62,16 @@ public class playerCharacter : MonoBehaviour
     private void OnMouseExit()
     {
         displayMovableDirection(false);
-    }
+    }*/
 
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision) // collision logic
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            enemyScript enemy = collision.gameObject.GetComponent<enemyScript>();
-            PathFinding path = aStar.GetComponent<PathFinding>();
+            /*enemyScript enemy = collision.gameObject.GetComponent<enemyScript>();
+            PathFinding path = aStar.GetComponent<PathFinding>();*/
 
-            if (enemy.dir != path.dir * -1)
+            /*if (enemy.dir != path.dir * -1)
             {
                 Debug.Log("Kill");
                 collision.gameObject.SetActive(false);
@@ -70,19 +80,40 @@ public class playerCharacter : MonoBehaviour
             else
             {
                 Debug.Log("player die");
+            }*/
+
+            collision.gameObject.SetActive(false); // set enemy inactive
+
+            enemyCount -=1; // reduce number of enemies
+
+            if(enemyCount <= 0) //if no enemies left display win UI components
+            {
+                endGameOverlay.SetActive(true);
+                nextLevel.SetActive(true);
+                winText.SetActive(true);
             }
         }
 
-        if (collision.gameObject.tag == "dest")
+        if (collision.gameObject.tag == "weapon") // display lose UI components
         {
-            if (firstCol > 0)
+           gameObject.SetActive(false);
+           endGameOverlay.SetActive(true);
+           loseText.SetActive(true);
+        }
+
+        if (collision.gameObject.tag == "dest") // on arrival at destination object each enemy takes one step
+        {
+            if (firstCol == true) // prevents initial snap to grid causing an enemy step
             {
+                
                 foreach (enemyScript emy in enemyList)
                 {
-                    emy.enemyStep();
+                    
+                    emy.enemyStep();   
+
                 }
             }
-            firstCol++;
+            firstCol = true;
         }
 
     }

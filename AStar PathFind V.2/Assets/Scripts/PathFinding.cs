@@ -6,36 +6,32 @@ public class PathFinding : MonoBehaviour
 {
     //bool tileSelected = false;
 
-    private float startTime;
-    public float speed = 50f;
-    public Transform player, target; //Player and target postion
-    public bool moveAllowed = true;
-    public int dir;
-    public Vector3 destination;
-    public GameObject enemies;
-    public GameObject destinationObject;
-    enemyScript[] enemyList;
+    public float speed = 50f; //player speed
+    public Transform player; // reference to player
+    public bool moveAllowed = true; // switch for player movement
+    public int dir; // variable for North South East West
+    public Vector3 destination; 
+    public GameObject destinationObject; // position and object for controlling the players movement
+    public GameObject enemies; // object containing enemies
+    enemyScript[] enemyList; // array of enemies
     GridScript grid; //Grid reference
-   // int frameCount = 0;
 
     private void Start()
     {
-        startTime = Time.time;
-        Node snap = grid.NodeFromWorldPoint(player.position);
-        player.position = snap.worldPosition;
-        destination = player.position;
+        Node snap = grid.NodeFromWorldPoint(player.position); 
+        player.position = snap.worldPosition; 
+        destination = player.position; // snaps player and destination object to nearest grid center
     }
     private void Awake()
     {
 
         enemyList = enemies.GetComponentsInChildren<enemyScript>();
-        grid = GetComponent<GridScript>(); //Assign grid as a reference to our gridscript class
-        //enemy = enemies.GetComponent<enemyScript>();
+        grid = GetComponent<GridScript>(); //Assign references to grid and enemies
     }
 
     public void Update()
     {
-
+        //movement in 4 directions. passes  direction to function
         if (Input.GetKeyDown(KeyCode.W) && moveAllowed == true)
         {
             dir = 1;
@@ -58,6 +54,7 @@ public class PathFinding : MonoBehaviour
             selectTile(-2,0);
         }
 
+         //rotate player to appropriate direction
         if (dir == 1)
         {
             player.rotation = Quaternion.Euler(0, 180, 0);
@@ -75,21 +72,24 @@ public class PathFinding : MonoBehaviour
             player.rotation = Quaternion.Euler(0, 90, 0);
         }
 
+        //player is constantly moving towards the destination object at a fixed speed
         player.position = Vector3.MoveTowards(player.position, destination, Time.deltaTime * speed);
         destinationObject.transform.position = destination;
 
+        //player movement is allowed only when player and destination are in same position
         if (Vector3.Distance(player.position, destination) < 0.01f)
         {
             moveAllowed = true;
         }
-
     }
 
-    public void selectTile(int dir, int stepSize)
+    public void selectTile(int dir, int stepSize) // recursive function for player movement to check for walls and edges
     {
         var stepCount = stepSize+1; //stores the variable for number of tiles to move
         moveAllowed = false;
 
+        
+        // W + z axis NORTH
         if (dir == 1)
         {
 
@@ -102,13 +102,13 @@ public class PathFinding : MonoBehaviour
                     }
                     else
                     {
-                     Vector3 lastPos = new Vector3(player.position.x, player.position.y, player.position.z + grid.nodeDiameter * (stepCount - 1)); // put the player on the node before this one if its unwalkable.
+                     Vector3 lastPos = new Vector3(player.position.x, player.position.y, player.position.z + grid.nodeDiameter * (stepCount - 1)); // if unwalkable we get the previous node
                      Node lastNode = grid.NodeFromWorldPoint(lastPos);
-                     destination = lastNode.worldPosition;
+                     destination = lastNode.worldPosition; // put our destination object there and the player will move towards it
             }
          }
         
-        //A key - on x axis
+        //A key - on x axis WEST
         if (dir == -2)
         {
             Vector3 newPos = new Vector3(player.position.x - grid.nodeDiameter*stepCount, player.position.y, player.position.z);
@@ -126,7 +126,7 @@ public class PathFinding : MonoBehaviour
             }
 
         }
-        //S key - on z axis
+        //S key - on z axis SOUTH
         if (dir == -1)
         {
             Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z - grid.nodeDiameter * stepCount);
@@ -144,7 +144,7 @@ public class PathFinding : MonoBehaviour
             }
 
         }
-        //D key + on x axis
+        //D key + on x axis EAST
         if (dir == 2)
         {
             Vector3 newPos = new Vector3(player.position.x + grid.nodeDiameter * stepCount, player.position.y, player.position.z);
@@ -161,15 +161,13 @@ public class PathFinding : MonoBehaviour
 
                 destination = lastNode.worldPosition;
 
-                Debug.Log("bump");
             }
             
         }
-        //enemy.enemyStep();
 
     }
 
-    public void enemyMove()
+    public void enemyMove() // function to call each enemy to step once
     {
         foreach (enemyScript emy in enemyList)
         {
@@ -178,91 +176,4 @@ public class PathFinding : MonoBehaviour
 
     }
 
-
-    //FindPath() is going to be the function you use to calculate the distance between two points on the grid. This is important though, before you use it make sure you're 
-    //passing it in NODE classes and not vectors. If you need to convert a vector3 for it pass that into the gridFromWorldPoint() function on the gridscript.
-    /*void FindPath(Node startNode, Node targetNode)
-    {
-        //Node startNode = grid.NodeFromWorldPoint(startPos);
-        //Node targetNode = grid.NodeFromWorldPoint(targetPos);
-
-        List<Node> openSet = new List<Node>(); //List of nodes from "OpenSet" which are nodes that have not been checked yet
-        HashSet<Node> closedSet = new HashSet<Node>();//HashSet of nodes from "ClosedSet" which are nodes that have already been checked
-        openSet.Add(startNode);//Adds the first node
-
-        while (openSet.Count > 0)
-        {
-            Node currentNode = openSet[0];
-            for (int i = 1; i < openSet.Count; i++)
-            {
-                //Checks the node being evalutated to see if it's fCost is lower or if the fCost is the same AND the hCost is lower
-                //if so switches to that node
-                if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost)
-                {
-                    currentNode = openSet[i];
-                }
-            }
-            //Remove Current from the openset and add to the closed set
-            openSet.Remove(currentNode);
-            closedSet.Add(currentNode);
-            //If destination is found runs RetracePath function passing in both the start and target node
-            if (currentNode == targetNode)
-            {
-                RetracePath(startNode, targetNode);
-                return;
-            }
-
-            foreach (Node neighbour in grid.GetNeighbours(currentNode))
-            {
-                if (!neighbour.walkable || closedSet.Contains(neighbour))
-                {
-                    continue;
-                }
-                //Calculates movement cost to neighbour using the gCost and GetDistance function
-                int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
-                if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
-                {
-                    neighbour.gCost = newMovementCostToNeighbour;//Set new g cost
-                    neighbour.hCost = GetDistance(neighbour, targetNode);//Calculates hCost with GetDistance function
-                    neighbour.parent = currentNode;
-
-                    if (!openSet.Contains(neighbour))
-                        openSet.Add(neighbour);
-                }
-            }
-
-        }
-    }
-
-    //RetracePath() allows yous to retrace the path between one point to another, you wouldn't really use this function as it's called in FindPath(Function above) and it's
-    //used to retrace the steps back from the path found.
-    void RetracePath(Node startNode, Node EndNode)
-    {
-        List<Node> path = new List<Node>();
-        Node currentNode = EndNode;
-
-        while (currentNode != startNode)
-        {
-            path.Add(currentNode);//Adds current node to the path
-            currentNode = currentNode.parent;//Parents node to retrace
-            
-        }
-
-        //path.Reverse();//Reverses path as the path was retraced
-        grid.path = path;
-        //Debug.Log(grid.path[0].worldPosition);
-        
-     
-    }*/
-
-    //Calculates distance from nodes 
-    int GetDistance(Node NodeA, Node NodeB)
-    {
-        int dstX = Mathf.Abs(NodeA.gridX - NodeB.gridX);
-        int dstY = Mathf.Abs(NodeB.gridY - NodeA.gridY);
-
-        if (dstX > dstY)
-            return 14 * dstY + 10 * (dstX - dstY);
-        return 14 * dstX + 10 * (dstY - dstX);
-    }
 }
