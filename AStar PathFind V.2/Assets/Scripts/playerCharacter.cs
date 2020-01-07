@@ -28,7 +28,14 @@ public class playerCharacter : MonoBehaviour
     {
         foreach (GameTile n in grid.grid)
         {
-            n.tileMap.parentTile.GetComponentInChildren<Renderer>().material.color = Color.white; // each frame set all to base colour
+            if (n.tileMap.walkable)
+            {
+                n.tileMap.parentTile.GetComponentInChildren<Renderer>().material.color = Color.white; // each frame set all to base colour
+            }
+            else
+            {
+                n.tileMap.parentTile.GetComponentInChildren<Renderer>().material.color = Color.blue; // each frame set all to base colour
+            }
         }
     }
 

@@ -25,6 +25,8 @@ public class GridScript : MonoBehaviour
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);//Determines how many nodes we can fit on the x axis
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);//Determines how many nodes we can fit on the y axis
         CreateGrid();
+        board.transform.localScale = new Vector3(gridSizeX * nodeDiameter + 3, board.transform.localScale.y, gridSizeY * nodeDiameter + 3);
+        board.transform.position = new Vector3(0.5f, -0.8f, 0.5f);
     }
 
 
@@ -33,8 +35,7 @@ public class GridScript : MonoBehaviour
     void CreateGrid()
     {
         grid = new GameTile[gridSizeX, gridSizeY];//Passes in two variables into our 2D array of nodes 
-        board.transform.localScale = new Vector3(gridSizeX*nodeDiameter+3, board.transform.localScale.y, gridSizeY * nodeDiameter+3);
-        board.transform.position = new Vector3(0.5f, -0.8f, 0.5f);
+        
        // tiles = new Node[posX, posY];
         //Calculate the bottom left by setting original position to the center grid than subtracting and multiplying to reach bottom left
         //NOTE Z AXIS USED INSTEAD OF Y FOR FORWARD

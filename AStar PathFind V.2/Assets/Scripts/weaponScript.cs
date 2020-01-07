@@ -25,5 +25,6 @@ public class weaponScript : MonoBehaviour
         {
             weaponNode.parentTile.GetComponentInChildren<Renderer>().material.color = Color.red;
         }
+
     }
 }
