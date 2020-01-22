@@ -12,6 +12,7 @@ public class enemyScript : MonoBehaviour
     bool onRun = true; // run once regardless of void start
     /*public Node newHilightNode; // highlight variable
     public Transform weapon;*/
+    public bool isMovingEnemy = true;
 
     private void Awake()
     { //Assign grid as a reference to our gridscript class
@@ -74,75 +75,82 @@ public class enemyScript : MonoBehaviour
     public void enemyStep()
     {
         //NORTH
-        if (dir == 1)
+        if (isMovingEnemy == true)
         {
-
-            Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + grid.nodeDiameter); //get next position
-            Node newNode = grid.NodeFromWorldPoint(newPos); //get the node
-
-            
-
-            if (newNode.walkable && newPos.z <= (grid.gridSizeX/2) * grid.nodeDiameter) // node is walkable and is inside the grid
+            if (dir == 1)
             {
-                destination = newNode.worldPosition; // place destination on new node
+
+                Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + grid.nodeDiameter); //get next position
+                Node newNode = grid.NodeFromWorldPoint(newPos); //get the node
+
+
+
+                if (newNode.walkable && newPos.z <= (grid.gridSizeX / 2) * grid.nodeDiameter) // node is walkable and is inside the grid
+                {
+                    destination = newNode.worldPosition; // place destination on new node
+                }
+
+                else
+                {
+                    dir *= -1;
+                    enemyStep(); //reverse direction and call function again
+                }
+
+
             }
 
-             else
+            //WEST
+            if (dir == -2)
             {
-                dir *= -1;
-                enemyStep(); //reverse direction and call function again
+                Vector3 newPos = new Vector3(transform.position.x - grid.nodeDiameter, transform.position.y, transform.position.z);
+                Node newNode = grid.NodeFromWorldPoint(newPos);
+
+                if (newNode.walkable && newPos.x >= -1 * (grid.gridSizeX / 2) * grid.nodeDiameter)
+                {
+                    destination = newNode.worldPosition;
+                }
+                else
+                {
+                    dir = dir * -1;
+                    enemyStep();
+                }
             }
+            //SOUTH
+            if (dir == -1)
+            {
+                Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z - grid.nodeDiameter);
+                Node newNode = grid.NodeFromWorldPoint(newPos);
 
+                if (newNode.walkable && newPos.z >= -1 * ((grid.gridSizeX / 2) * grid.nodeDiameter))
+                {
+                    destination = newNode.worldPosition;
+                }
+                else
+                {
+                    dir = dir * -1;
+                    enemyStep();
+                }
+            }
+            //EAST
+            if (dir == 2)
+            {
+                Vector3 newPos = new Vector3(transform.position.x + grid.nodeDiameter, transform.position.y, transform.position.z);
+                Node newNode = grid.NodeFromWorldPoint(newPos);
 
+                if (newNode.walkable && newPos.x <= ((grid.gridSizeX / 2) * grid.nodeDiameter))
+                {
+                    destination = newNode.worldPosition;
+                }
+                else
+                {
+                    dir = dir * -1;
+                    enemyStep();
+                }
+            }
         }
-
-     //WEST
-        if (dir == -2)
+        else
         {
-            Vector3 newPos = new Vector3(transform.position.x - grid.nodeDiameter, transform.position.y, transform.position.z);
-            Node newNode = grid.NodeFromWorldPoint(newPos);
-
-            if (newNode.walkable && newPos.x >= -1 * (grid.gridSizeX / 2) * grid.nodeDiameter)
-            {
-                destination = newNode.worldPosition;
-            }
-            else
-            {
-                dir = dir * -1;
-                enemyStep();
-            }
-        }
-      //SOUTH
-        if (dir == -1)
-        {
-            Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z - grid.nodeDiameter);
-            Node newNode = grid.NodeFromWorldPoint(newPos);
-
-            if (newNode.walkable && newPos.z >= -1*((grid.gridSizeX / 2) * grid.nodeDiameter))
-            {
-                destination = newNode.worldPosition;
-            }
-            else
-            {
-                dir = dir * -1;
-                enemyStep();
-            }
-        }
-        //EAST
-        if (dir == 2)
-        {
-            Vector3 newPos = new Vector3(transform.position.x + grid.nodeDiameter, transform.position.y, transform.position.z); 
-            Node newNode = grid.NodeFromWorldPoint(newPos); 
-
-            if (newNode.walkable && newPos.x <= ((grid.gridSizeX / 2) * grid.nodeDiameter))
-            {
-                destination = newNode.worldPosition;
-            }
-            else
-            {
-                dir = dir * -1;
-                enemyStep();
-            }
+            transform.Rotate(0, 90, 0);
         }
     }
 }

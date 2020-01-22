@@ -34,7 +34,8 @@ public class playerCharacter : MonoBehaviour
             }
             else
             {
-                n.tileMap.parentTile.GetComponentInChildren<Renderer>().material.color = Color.blue; // each frame set all to base colour
+                var renderer = n.tileMap.parentTile.GetComponentInChildren<Renderer>(); // each frame set all to base colour
+                renderer.enabled = false;
             }
         }
     }
