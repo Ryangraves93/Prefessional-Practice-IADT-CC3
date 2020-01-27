@@ -15,7 +15,7 @@ public class PathFinding : MonoBehaviour
     public GameObject enemies; // object containing enemies
     enemyScript[] enemyList; // array of enemies
     GridScript grid; //Grid reference
-
+    float offset = 4f;
     private void Start()
     {
         Node snap = grid.NodeFromWorldPoint(player.position); 
@@ -93,7 +93,7 @@ public class PathFinding : MonoBehaviour
         if (dir == 1)
         {
 
-                Vector3 newPos = new Vector3(player.position.x, player.position.y, player.position.z + grid.nodeDiameter*stepCount); //check next tile in direction desired * number of tiles
+                Vector3 newPos = new Vector3(player.position.x, player.position.y + offset, player.position.z + grid.nodeDiameter*stepCount); //check next tile in direction desired * number of tiles
                 Node newNode = grid.NodeFromWorldPoint(newPos); //get the node
 
                     if (newNode.walkable && stepCount <= grid.gridSizeX) // if the node is vacant and were not moving an entire grid length
@@ -102,7 +102,7 @@ public class PathFinding : MonoBehaviour
                     }
                     else
                     {
-                     Vector3 lastPos = new Vector3(player.position.x, player.position.y, player.position.z + grid.nodeDiameter * (stepCount - 1)); // if unwalkable we get the previous node
+                     Vector3 lastPos = new Vector3(player.position.x, player.position.y + offset, player.position.z + grid.nodeDiameter * (stepCount - 1)); // if unwalkable we get the previous node
                      Node lastNode = grid.NodeFromWorldPoint(lastPos);
                      destination = lastNode.worldPosition; // put our destination object there and the player will move towards it
             }
@@ -111,7 +111,7 @@ public class PathFinding : MonoBehaviour
         //A key - on x axis WEST
         if (dir == -2)
         {
-            Vector3 newPos = new Vector3(player.position.x - grid.nodeDiameter*stepCount, player.position.y, player.position.z);
+            Vector3 newPos = new Vector3(player.position.x - grid.nodeDiameter*stepCount, player.position.y + offset, player.position.z);
             Node newNode = grid.NodeFromWorldPoint(newPos);
 
             if (newNode.walkable && stepCount <= grid.gridSizeX)
