@@ -73,7 +73,7 @@ public class PathFinding : MonoBehaviour
         }
 
         //player is constantly moving towards the destination object at a fixed speed
-        player.position = Vector3.MoveTowards(player.position, destination, Time.deltaTime * speed);
+        player.position = Vector3.MoveTowards(player.position, destination , Time.deltaTime * speed);
         destinationObject.transform.position = destination;
 
         //player movement is allowed only when player and destination are in same position

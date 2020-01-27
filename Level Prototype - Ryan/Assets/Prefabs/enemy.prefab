@@ -204,7 +204,20 @@ MonoBehaviour:
   dir: 0
   speed: 20
   destination: {x: 0, y: 0, z: 0}
-  weapon: {fileID: 0}
+  isMovingEnemy: 1
+--- !u!65 &8014182863627635164
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9206536046640043364}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.08887, y: 2.2701654, z: 2.6268604}
+  m_Center: {x: 0.11600113, y: -0.13508199, z: -0.8134301}
 --- !u!1001 &2316334090646761231
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -272,8 +285,19 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4996885156584288848, guid: f69aca8a52af15f479b9f10af1551d3c,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f69aca8a52af15f479b9f10af1551d3c, type: 3}
+--- !u!1 &9206536046640043364 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6908920215358126699, guid: f69aca8a52af15f479b9f10af1551d3c,
+    type: 3}
+  m_PrefabInstance: {fileID: 2316334090646761231}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5408791321722529395 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7722167691122575740, guid: f69aca8a52af15f479b9f10af1551d3c,
