@@ -52,22 +52,22 @@ public class enemyScript : MonoBehaviour
         // align to correct rotation
         if (dir == 1)
         {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
+            transform.rotation = Quaternion.Euler(0, 0, 0);
 
         }
         if (dir == -1)
         {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            transform.rotation = Quaternion.Euler(0, 180, 0);
 
         }
         if (dir == 2)
         {
-            transform.rotation = Quaternion.Euler(0, 270, 0);
+            transform.rotation = Quaternion.Euler(0, 90, 0);
   
         }
         if (dir == -2)
         {
-            transform.rotation = Quaternion.Euler(0, 90, 0);
+            transform.rotation = Quaternion.Euler(0, 270, 0);
 
         }
     }

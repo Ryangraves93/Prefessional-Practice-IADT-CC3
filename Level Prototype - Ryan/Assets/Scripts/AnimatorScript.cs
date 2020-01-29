@@ -25,6 +25,21 @@ public class AnimatorScript : MonoBehaviour
             anim.SetBool("IsWalking", true);
             yield return new WaitForSeconds(10f);
         }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            anim.SetBool("IsWalking", true);
+            yield return new WaitForSeconds(10f);
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            anim.SetBool("IsWalking", true);
+            yield return new WaitForSeconds(10f);
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            anim.SetBool("IsWalking", true);
+            yield return new WaitForSeconds(10f);
+        }
         else if (player.position == destination.position)
         {
             anim.SetBool("IsWalking", false);

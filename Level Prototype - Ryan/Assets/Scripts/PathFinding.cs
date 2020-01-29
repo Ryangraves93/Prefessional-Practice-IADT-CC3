@@ -57,19 +57,19 @@ public class PathFinding : MonoBehaviour
          //rotate player to appropriate direction
         if (dir == 1)
         {
-            player.rotation = Quaternion.Euler(0, 180, 0);
+            player.rotation = Quaternion.Euler(0, 0, 0);
         }
         if (dir == -1)
         {
-            player.rotation = Quaternion.Euler(0, 0, 0);
+            player.rotation = Quaternion.Euler(0, 180, 0);
         }
         if (dir == 2)
         {
-            player.rotation = Quaternion.Euler(0, 270, 0);
+            player.rotation = Quaternion.Euler(0, 90, 0);
         }
         if (dir == -2)
         {
-            player.rotation = Quaternion.Euler(0, 90, 0);
+            player.rotation = Quaternion.Euler(0, 270, 0);
         }
 
         //player is constantly moving towards the destination object at a fixed speed
