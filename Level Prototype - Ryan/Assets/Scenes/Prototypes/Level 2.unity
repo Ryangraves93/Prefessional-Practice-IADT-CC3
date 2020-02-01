@@ -354,10 +354,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20168a7131be3ea47b2038704e366b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSquareEnemy: 1
   aStar: {fileID: 0}
   dir: -2
   speed: 20
   destination: {x: 9.5, y: 0, z: 3.5}
+  isMovingEnemy: 1
 --- !u!136 &128484064
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -763,10 +765,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20168a7131be3ea47b2038704e366b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSquareEnemy: 1
   aStar: {fileID: 0}
   dir: 2
   speed: 20
   destination: {x: -2.5, y: 0, z: 15.5}
+  isMovingEnemy: 1
 --- !u!136 &380632403
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1311,9 +1315,9 @@ Transform:
   - {fileID: 684484924}
   - {fileID: 379948549}
   - {fileID: 607026836}
-  - {fileID: 1010281471}
-  - {fileID: 1857110395}
   - {fileID: 1832644592}
+  - {fileID: 1857110395}
+  - {fileID: 1010281471}
   - {fileID: 1102610093}
   m_Father: {fileID: 0}
   m_RootOrder: 9
@@ -1449,10 +1453,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20168a7131be3ea47b2038704e366b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSquareEnemy: 1
   aStar: {fileID: 0}
   dir: -2
   speed: 20
   destination: {x: 3.5, y: 0, z: 3.5}
+  isMovingEnemy: 1
 --- !u!136 &836740526
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1665,7 +1671,6 @@ MonoBehaviour:
   nodeRadius: 3
   tilePrefab: {fileID: 7092377026210855572, guid: d126915fec807c04499d3d78c9e992b7,
     type: 3}
-  board: {fileID: 1452124529}
   nodeDiameter: 6
   gridSizeX: 10
   gridSizeY: 10
@@ -2973,10 +2978,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20168a7131be3ea47b2038704e366b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSquareEnemy: 1
   aStar: {fileID: 0}
   dir: 2
   speed: 20
   destination: {x: 3.5, y: 0, z: 3.5}
+  isMovingEnemy: 1
 --- !u!136 &1829341789
 CapsuleCollider:
   m_ObjectHideFlags: 0

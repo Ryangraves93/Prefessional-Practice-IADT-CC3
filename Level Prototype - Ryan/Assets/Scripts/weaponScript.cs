@@ -23,7 +23,7 @@ public class weaponScript : MonoBehaviour
             && transform.position.x <= 1 * ((grid.gridSizeX / 2) * grid.nodeDiameter)
             && transform.position.x >= -1 * ((grid.gridSizeX / 2) * grid.nodeDiameter))
         {
-            weaponNode.parentTile.GetComponentInChildren<Renderer>().material.color = Color.red;
+            weaponNode.parentTile.GetComponentInChildren<Renderer>().material.color = Color.red;     
         }
 
     }

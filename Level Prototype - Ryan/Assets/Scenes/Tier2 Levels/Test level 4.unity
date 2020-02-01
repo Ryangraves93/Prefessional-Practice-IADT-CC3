@@ -248,6 +248,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Moving Enemy (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7250884193788673568, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7250884193788412732, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -306,7 +311,12 @@ PrefabInstance:
     - target: {fileID: 6782857674346872943, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
         type: 3}
       propertyPath: dir
-      value: -1
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6782857674346872943, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
+        type: 3}
+      propertyPath: isSquareEnemy
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f24c45d4c6e98aa4d8eb770475aea9c0, type: 3}
@@ -712,7 +722,12 @@ PrefabInstance:
     - target: {fileID: 6782857674346872943, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
         type: 3}
       propertyPath: dir
-      value: -1
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6782857674346872943, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
+        type: 3}
+      propertyPath: isSquareEnemy
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f24c45d4c6e98aa4d8eb770475aea9c0, type: 3}
@@ -1817,6 +1832,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Moving Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 7250884193788673568, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7250884193788412732, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1875,7 +1895,12 @@ PrefabInstance:
     - target: {fileID: 6782857674346872943, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
         type: 3}
       propertyPath: dir
-      value: -1
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6782857674346872943, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
+        type: 3}
+      propertyPath: isSquareEnemy
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f24c45d4c6e98aa4d8eb770475aea9c0, type: 3}
@@ -5520,7 +5545,7 @@ MonoBehaviour:
   nodeRadius: 3.5
   tilePrefab: {fileID: 7092377026210855572, guid: d126915fec807c04499d3d78c9e992b7,
     type: 3}
-  nodeDiameter: 6
+  nodeDiameter: 7
   gridSizeX: 10
   gridSizeY: 10
 --- !u!4 &934393611
@@ -12631,6 +12656,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Moving Enemy (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 7250884193788673568, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7250884193788412732, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12689,7 +12719,12 @@ PrefabInstance:
     - target: {fileID: 6782857674346872943, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
         type: 3}
       propertyPath: dir
-      value: -2
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6782857674346872943, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
+        type: 3}
+      propertyPath: isSquareEnemy
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f24c45d4c6e98aa4d8eb770475aea9c0, type: 3}

@@ -4,9 +4,18 @@ using UnityEngine;
 
 public class enemyScript : MonoBehaviour
 {
+
+    public enum direction{
+        North,
+        South,
+        East,
+        West,
+    };
+    public bool isSquareEnemy = true;
+
     public GameObject aStar; // grid references
     GridScript grid;
-    public int dir; // direction of movement
+    public direction dir; // direction of movement
     public float speed = 20f;
     public Vector3 destination; // destination object
     bool onRun = true; // run once regardless of void start
@@ -37,9 +46,8 @@ public class enemyScript : MonoBehaviour
         }
 
 
-
+       
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * speed);
-
 
 /*      Vector3 highlight = new Vector3(weapon.position.x, weapon.position.y, weapon.position.z);
         Node highlightNode = grid.NodeFromWorldPoint(highlight);
@@ -49,103 +57,110 @@ public class enemyScript : MonoBehaviour
         }*/
 
 
-        // align to correct rotation
-        if (dir == 1)
+        switch (dir)
         {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-
+            case direction.North:
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                    break;
+                }
+            case direction.South:
+                {
+                    transform.rotation = Quaternion.Euler(0, 180, 0);
+                    break;
+                }
+            case direction.East:
+                {
+                    transform.rotation = Quaternion.Euler(0, 90, 0);
+                    break;
+                }
+            case direction.West:
+                {
+                    transform.rotation = Quaternion.Euler(0, 270, 0);
+                    break;
+                }
         }
-        if (dir == -1)
-        {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-
-        }
-        if (dir == 2)
-        {
-            transform.rotation = Quaternion.Euler(0, 90, 0);
-  
-        }
-        if (dir == -2)
-        {
-            transform.rotation = Quaternion.Euler(0, 270, 0);
-
-        }
+     
     }
 
     public void enemyStep()
     {
+
         //NORTH
         if (isMovingEnemy == true)
         {
-            if (dir == 1)
+            switch (dir)
             {
+                case direction.North:
+                    {
+                        Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + grid.nodeDiameter); //get next position
+                        Node newNode = grid.NodeFromWorldPoint(newPos); //get the node
 
-                Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + grid.nodeDiameter); //get next position
-                Node newNode = grid.NodeFromWorldPoint(newPos); //get the node
+                        if (newNode.walkable && newPos.z <= (grid.gridSizeX / 2) * grid.nodeDiameter * 1.01) // node is walkable and is inside the grid
+                        {
+                            destination = newNode.worldPosition; // place destination on new node
+                        }
+                        else
+                        {
+                            dir = isSquareEnemy ? direction.East : direction.South;
+                            //dir = direction.South;
+                            //enemyStep(); //reverse direction and call function again
+                        }
+                        break;
+                    }
+                case direction.South:
+                    {
+                        Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z - grid.nodeDiameter);
+                        Node newNode = grid.NodeFromWorldPoint(newPos);
 
+                        if (newNode.walkable && newPos.z >= -1 * ((grid.gridSizeX / 2) * grid.nodeDiameter * 1.01))
+                        {
+                            destination = newNode.worldPosition;
+                        }
+                        else
+                        {
+                            dir = isSquareEnemy ? direction.West : direction.North;
+                            //dir = direction.North;
+                            //enemyStep();
+                        }
+                        break;
+                    }
+                case direction.East:
+                    {
+                        Vector3 newPos = new Vector3(transform.position.x + grid.nodeDiameter, transform.position.y, transform.position.z);
+                        Node newNode = grid.NodeFromWorldPoint(newPos);
 
+                        if (newNode.walkable && newPos.x <= ((grid.gridSizeX / 2) * grid.nodeDiameter * 1.01))
+                        {
+                            destination = newNode.worldPosition;
 
-                if (newNode.walkable && newPos.z <= (grid.gridSizeX / 2) * grid.nodeDiameter) // node is walkable and is inside the grid
-                {
-                    destination = newNode.worldPosition; // place destination on new node
-                }
+                        }
+                        else
+                        {
+                            dir = isSquareEnemy ? direction.South : direction.West;
+                            //dir = direction.West;
+                            //enemyStep();
 
-                else
-                {
-                    dir *= -1;
-                    enemyStep(); //reverse direction and call function again
-                }
+                        }
+                        break;
+                    }
+                case direction.West:
+                    {
+                        Vector3 newPos = new Vector3(transform.position.x - grid.nodeDiameter, transform.position.y, transform.position.z);
+                        Node newNode = grid.NodeFromWorldPoint(newPos);
 
-
-            }
-
-            //WEST
-            if (dir == -2)
-            {
-                Vector3 newPos = new Vector3(transform.position.x - grid.nodeDiameter, transform.position.y, transform.position.z);
-                Node newNode = grid.NodeFromWorldPoint(newPos);
-
-                if (newNode.walkable && newPos.x >= -1 * (grid.gridSizeX / 2) * grid.nodeDiameter)
-                {
-                    destination = newNode.worldPosition;
-                }
-                else
-                {
-                    dir = dir * -1;
-                    enemyStep();
-                }
-            }
-            //SOUTH
-            if (dir == -1)
-            {
-                Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z - grid.nodeDiameter);
-                Node newNode = grid.NodeFromWorldPoint(newPos);
-
-                if (newNode.walkable && newPos.z >= -1 * ((grid.gridSizeX / 2) * grid.nodeDiameter))
-                {
-                    destination = newNode.worldPosition;
-                }
-                else
-                {
-                    dir = dir * -1;
-                    enemyStep();
-                }
-            }
-            //EAST
-            if (dir == 2)
-            {
-                Vector3 newPos = new Vector3(transform.position.x + grid.nodeDiameter, transform.position.y, transform.position.z);
-                Node newNode = grid.NodeFromWorldPoint(newPos);
-
-                if (newNode.walkable && newPos.x <= ((grid.gridSizeX / 2) * grid.nodeDiameter))
-                {
-                    destination = newNode.worldPosition;
-                }
-                else
-                {
-                    dir = dir * -1;
-                    enemyStep();
-                }
+                        if (newNode.walkable && newPos.x >= -1 * (grid.gridSizeX / 2) * grid.nodeDiameter * 1.01)
+                        {
+                            destination = newNode.worldPosition;
+                        }
+                        else
+                        {
+                            //dir = isSquareEnemy ? direction.East : direction.South;
+                            dir = direction.East;
+                            enemyStep();
+                        }
+                        break;
+                    }
             }
         }
         else
