@@ -10,6 +10,7 @@ public class enemyScript : MonoBehaviour
         South,
         East,
         West,
+        None,
     };
     public bool isSquareEnemy = true;
 
@@ -87,85 +88,83 @@ public class enemyScript : MonoBehaviour
     {
 
         //NORTH
-        if (isMovingEnemy == true)
+        switch (dir)
         {
-            switch (dir)
-            {
-                case direction.North:
+            case direction.North:
+                {
+                    Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + grid.nodeDiameter); //get next position
+                    Node newNode = grid.NodeFromWorldPoint(newPos); //get the node
+
+                    if (newNode.walkable && newPos.z <= (grid.gridSizeX / 2) * grid.nodeDiameter * 1.01) // node is walkable and is inside the grid
                     {
-                        Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + grid.nodeDiameter); //get next position
-                        Node newNode = grid.NodeFromWorldPoint(newPos); //get the node
-
-                        if (newNode.walkable && newPos.z <= (grid.gridSizeX / 2) * grid.nodeDiameter * 1.01) // node is walkable and is inside the grid
-                        {
-                            destination = newNode.worldPosition; // place destination on new node
-                        }
-                        else
-                        {
-                            dir = isSquareEnemy ? direction.East : direction.South;
-                            //dir = direction.South;
-                            //enemyStep(); //reverse direction and call function again
-                        }
-                        break;
+                        destination = newNode.worldPosition; // place destination on new node
                     }
-                case direction.South:
+                    else
                     {
-                        Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z - grid.nodeDiameter);
-                        Node newNode = grid.NodeFromWorldPoint(newPos);
-
-                        if (newNode.walkable && newPos.z >= -1 * ((grid.gridSizeX / 2) * grid.nodeDiameter * 1.01))
-                        {
-                            destination = newNode.worldPosition;
-                        }
-                        else
-                        {
-                            dir = isSquareEnemy ? direction.West : direction.North;
-                            //dir = direction.North;
-                            //enemyStep();
-                        }
-                        break;
+                        dir = isSquareEnemy ? direction.East : direction.South;
+                        //dir = direction.South;
+                        //enemyStep(); //reverse direction and call function again
                     }
-                case direction.East:
+                    break;
+                }
+            case direction.South:
+                {
+                    Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z - grid.nodeDiameter);
+                    Node newNode = grid.NodeFromWorldPoint(newPos);
+
+                    if (newNode.walkable && newPos.z >= -1 * ((grid.gridSizeX / 2) * grid.nodeDiameter * 1.01))
                     {
-                        Vector3 newPos = new Vector3(transform.position.x + grid.nodeDiameter, transform.position.y, transform.position.z);
-                        Node newNode = grid.NodeFromWorldPoint(newPos);
-
-                        if (newNode.walkable && newPos.x <= ((grid.gridSizeX / 2) * grid.nodeDiameter * 1.01))
-                        {
-                            destination = newNode.worldPosition;
-
-                        }
-                        else
-                        {
-                            dir = isSquareEnemy ? direction.South : direction.West;
-                            //dir = direction.West;
-                            //enemyStep();
-
-                        }
-                        break;
+                        destination = newNode.worldPosition;
                     }
-                case direction.West:
+                    else
                     {
-                        Vector3 newPos = new Vector3(transform.position.x - grid.nodeDiameter, transform.position.y, transform.position.z);
-                        Node newNode = grid.NodeFromWorldPoint(newPos);
-
-                        if (newNode.walkable && newPos.x >= -1 * (grid.gridSizeX / 2) * grid.nodeDiameter * 1.01)
-                        {
-                            destination = newNode.worldPosition;
-                        }
-                        else
-                        {
-                            //dir = isSquareEnemy ? direction.East : direction.South;
-                            dir = direction.East;
-                            enemyStep();
-                        }
-                        break;
+                        dir = isSquareEnemy ? direction.West : direction.North;
+                        //dir = direction.North;
+                        //enemyStep();
                     }
-            }
+                    break;
+                }
+            case direction.East:
+                {
+                    Vector3 newPos = new Vector3(transform.position.x + grid.nodeDiameter, transform.position.y, transform.position.z);
+                    Node newNode = grid.NodeFromWorldPoint(newPos);
+
+                    if (newNode.walkable && newPos.x <= ((grid.gridSizeX / 2) * grid.nodeDiameter * 1.01))
+                    {
+                        destination = newNode.worldPosition;
+
+                    }
+                    else
+                    {
+                        dir = isSquareEnemy ? direction.South : direction.West;
+                        //dir = direction.West;
+                        //enemyStep();
+
+                    }
+                    break;
+                }
+            case direction.West:
+                {
+                    Vector3 newPos = new Vector3(transform.position.x - grid.nodeDiameter, transform.position.y, transform.position.z);
+                    Node newNode = grid.NodeFromWorldPoint(newPos);
+
+                    if (newNode.walkable && newPos.x >= -1 * (grid.gridSizeX / 2) * grid.nodeDiameter * 1.01)
+                    {
+                        destination = newNode.worldPosition;
+                    }
+                    else
+                    {
+                        dir = isSquareEnemy ? direction.South : direction.East;
+                        //dir = direction.East;
+                        //enemyStep();
+                    }
+                    break;
+                }
+            case direction.None:
+                {
+                    transform.Rotate(0, 90, 0);
+                }
+                break;
         }
-        else
-        {
-            transform.Rotate(0, 90, 0);
-        }
-    }
+    } 
 }

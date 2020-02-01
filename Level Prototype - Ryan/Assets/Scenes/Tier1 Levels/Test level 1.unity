@@ -6016,5 +6016,10 @@ PrefabInstance:
       propertyPath: aStar
       value: 
       objectReference: {fileID: 934393609}
+    - target: {fileID: 6782857674346872943, guid: 81498c65224465841bdc68a60594ae6c,
+        type: 3}
+      propertyPath: isSquareEnemy
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81498c65224465841bdc68a60594ae6c, type: 3}

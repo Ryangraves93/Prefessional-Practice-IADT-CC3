@@ -316,7 +316,7 @@ PrefabInstance:
     - target: {fileID: 6782857674346872943, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
         type: 3}
       propertyPath: isSquareEnemy
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f24c45d4c6e98aa4d8eb770475aea9c0, type: 3}
@@ -727,7 +727,7 @@ PrefabInstance:
     - target: {fileID: 6782857674346872943, guid: f24c45d4c6e98aa4d8eb770475aea9c0,
         type: 3}
       propertyPath: isSquareEnemy
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f24c45d4c6e98aa4d8eb770475aea9c0, type: 3}
@@ -752,7 +752,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 437054, guid: 03a7e6f590095c247b3f251dd02f3780, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -16.11
+      value: -16.36
       objectReference: {fileID: 0}
     - target: {fileID: 437054, guid: 03a7e6f590095c247b3f251dd02f3780, type: 3}
       propertyPath: m_LocalPosition.z

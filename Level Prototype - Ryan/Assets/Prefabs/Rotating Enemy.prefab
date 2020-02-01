@@ -1797,8 +1797,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20168a7131be3ea47b2038704e366b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSquareEnemy: 0
   aStar: {fileID: 0}
-  dir: 0
+  dir: 4
   speed: 20
   destination: {x: 0, y: 0, z: 0}
   isMovingEnemy: 0
