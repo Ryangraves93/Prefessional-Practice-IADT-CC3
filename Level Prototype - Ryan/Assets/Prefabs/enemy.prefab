@@ -2439,11 +2439,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20168a7131be3ea47b2038704e366b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSquareEnemy: 1
   aStar: {fileID: 0}
   dir: 0
   speed: 20
   destination: {x: 0, y: 0, z: 0}
   isMovingEnemy: 0
+  enemySharingTile: 0
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 0
+  nodeOffset: {x: 3, y: 0, z: 3}
 --- !u!1 &5719290358788398525
 GameObject:
   m_ObjectHideFlags: 0
@@ -3650,6 +3656,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: weapon
+      objectReference: {fileID: 0}
+    - target: {fileID: 6908920215358126699, guid: f69aca8a52af15f479b9f10af1551d3c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7722167691122575740, guid: f69aca8a52af15f479b9f10af1551d3c,
         type: 3}

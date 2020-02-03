@@ -18,11 +18,15 @@ public class enemyScript : MonoBehaviour
     GridScript grid;
     public direction dir; // direction of movement
     public float speed = 20f;
+    public int range;
     public Vector3 destination; // destination object
     bool onRun = true; // run once regardless of void start
-    /*public Node newHilightNode; // highlight variable
-    public Transform weapon;*/
+
     public bool isMovingEnemy = true;
+    public bool enemySharingTile = false; //Is there more than one enemy on one tile
+    public LayerMask enemyMask;
+
+    public Vector3 nodeOffset = new Vector3(3, 0, 3); //Offset for enemies on multiple tiles
 
     private void Awake()
     { //Assign grid as a reference to our gridscript class
@@ -35,9 +39,6 @@ public class enemyScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
-
         if (onRun == true)
         {
             Node snap = grid.NodeFromWorldPoint(transform.position);
@@ -45,18 +46,8 @@ public class enemyScript : MonoBehaviour
             destination = transform.position;
             onRun = false;
         }
-
-
-       
-        transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * speed);
-
-/*      Vector3 highlight = new Vector3(weapon.position.x, weapon.position.y, weapon.position.z);
-        Node highlightNode = grid.NodeFromWorldPoint(highlight);
-        if (highlightNode.walkable)
-        {
-            highlightNode.parentTile.GetComponentInChildren<Renderer>().material.color = Color.red;
-        }*/
-
+        enemyAttack();
+        multipleEnemiesOnTile();
 
         switch (dir)
         {
@@ -83,10 +74,28 @@ public class enemyScript : MonoBehaviour
         }
      
     }
-
+    public void multipleEnemiesOnTile ()
+    {
+        
+        if (enemySharingTile == false)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * speed);
+        }
+    }
+    
+    public void enemyAttack()
+    {
+        RaycastHit hit;
+        //if (enemySharingTile = false)
+        //{
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, grid.nodeDiameter * range, enemyMask) && enemySharingTile == false)
+            {
+                hit.transform.gameObject.SetActive(false);
+            }
+        //}
+    }
     public void enemyStep()
     {
-
         //NORTH
         switch (dir)
         {
@@ -166,5 +175,15 @@ public class enemyScript : MonoBehaviour
                 }
                 break;
         }
-    } 
+        enemySharingTile = false;
+    }
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            enemySharingTile = true;
+            Vector3 newPos = transform.position + nodeOffset;
+            transform.position = Vector3.MoveTowards(transform.position, newPos, Time.deltaTime * speed);
+        }
+    }
 }

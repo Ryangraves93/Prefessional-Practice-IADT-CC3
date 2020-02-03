@@ -76,6 +76,7 @@ public class playerCharacter : MonoBehaviour
     {
         if (collision.gameObject.tag == "Enemy")
         {
+            Debug.Log("Little cunt");
             /*enemyScript enemy = collision.gameObject.GetComponent<enemyScript>();
             PathFinding path = aStar.GetComponent<PathFinding>();*/
 
