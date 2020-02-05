@@ -8,6 +8,7 @@ TagManager:
   - dest
   - Edest
   - weapon
+  - Obstacle
   layers:
   - Default
   - TransparentFX

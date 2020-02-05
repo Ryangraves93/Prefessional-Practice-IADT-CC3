@@ -1808,6 +1808,10 @@ MonoBehaviour:
   enemyMask:
     serializedVersion: 2
     m_Bits: 1024
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 256
+  testDirection: {x: -0, y: -1, z: -0}
   nodeOffset: {x: 3, y: 0, z: 3}
 --- !u!1 &7250884193788674542
 GameObject:

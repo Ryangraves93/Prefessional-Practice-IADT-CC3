@@ -24,7 +24,9 @@ public class enemyScript : MonoBehaviour
 
     public bool isMovingEnemy = true;
     public bool enemySharingTile = false; //Is there more than one enemy on one tile
-    public LayerMask enemyMask;
+    public LayerMask enemyMask, obstacleMask;
+
+    public Vector3 testDirection = -Vector3.up;
 
     public Vector3 nodeOffset = new Vector3(3, 0, 3); //Offset for enemies on multiple tiles
 
@@ -39,6 +41,7 @@ public class enemyScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        enemyAttack();
         if (onRun == true)
         {
             Node snap = grid.NodeFromWorldPoint(transform.position);
@@ -46,9 +49,9 @@ public class enemyScript : MonoBehaviour
             destination = transform.position;
             onRun = false;
         }
-        enemyAttack();
+       
         multipleEnemiesOnTile();
-
+        
         switch (dir)
         {
             case direction.North:
@@ -72,9 +75,10 @@ public class enemyScript : MonoBehaviour
                     break;
                 }
         }
-     
     }
-    public void multipleEnemiesOnTile ()
+    //Runs movetowards function in update if no enemies are sharing the same tile
+   
+    public void multipleEnemiesOnTile () 
     {
         
         if (enemySharingTile == false)
@@ -82,21 +86,37 @@ public class enemyScript : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * speed);
         }
     }
-    
+    //Collider to detect if enemies are sharing the same tile, if they are an offset is created and enemies are placed at a new position
+    //At the end of enemyStep the bool enemySharingTile is set to false so the next move the enemies will continue on their path.
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            enemySharingTile = true;
+            Vector3 newPos = transform.position + nodeOffset;
+            transform.position = Vector3.MoveTowards(transform.position, newPos, Time.deltaTime * speed);
+        }
+    }
+
+    // Creates a raycast from the enemies postion with a range of one node multiple by a public variable, Range which determines the max range of the raycast
+    //If the tag of the ray hit is the player than will set active.
+    //The enemyMask parameter of the raycast makes sure that it can also hit obstacles so the player cannot be destoryed from behind cover
     public void enemyAttack()
     {
         RaycastHit hit;
-        //if (enemySharingTile = false)
-        //{
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, grid.nodeDiameter * range, enemyMask) && enemySharingTile == false)
-            {
-                hit.transform.gameObject.SetActive(false);
-            }
-        //}
+        Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * (grid.nodeDiameter * range), Color.red, 0, false);// Debugging ray to see raycast length and direction
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, grid.nodeDiameter * range,enemyMask) && enemySharingTile == false)
+              { 
+                 if (hit.transform.tag == "Player")
+                     {
+                        Debug.Log(hit.transform.tag);
+                        hit.transform.gameObject.SetActive(false);
+                    }
+             }
     }
     public void enemyStep()
     {
-        //NORTH
+        enemyAttack();
         switch (dir)
         {
             case direction.North:
@@ -177,13 +197,5 @@ public class enemyScript : MonoBehaviour
         }
         enemySharingTile = false;
     }
-    public void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            enemySharingTile = true;
-            Vector3 newPos = transform.position + nodeOffset;
-            transform.position = Vector3.MoveTowards(transform.position, newPos, Time.deltaTime * speed);
-        }
-    }
+ 
 }
