@@ -39,5 +39,6 @@ public class sceneManager : MonoBehaviour
     public void Retry()
     {
         SceneManager.LoadScene(currScene);
+
     }
 }

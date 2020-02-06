@@ -162,27 +162,27 @@ public class GridScript : MonoBehaviour
 
 
     //Only used for development purposes, it draws a visualisation of the grid on the game scene to show the span of the grid and the width of the node diameters.
-   // private void OnDrawGizmos()
-    //{
-      //  Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
 
-      //  if (grid != null)
-      //  {
-        //    Node playerNode = NodeFromWorldPoint(player.position);
-       //     foreach (GameTile n in grid)
-          //  {
-           //     Gizmos.color = (n.tileMap.walkable) ? Color.white : Color.red;
-            //    if (path != null)
-            //    {
-                 //   if (path.Contains(n.tileMap))
-                 //       Gizmos.color = Color.black;
-             //   }
-               // if (playerNode == n.tileMap)
-               // {
-               //     Gizmos.color = Color.cyan;
-               // }
-              //  Gizmos.DrawCube(n.tileMap.worldPosition, Vector3.one * (nodeDiameter - .1f));
-           // }
-       // }
-   // }
+        if (grid != null)
+       {
+            Node playerNode = NodeFromWorldPoint(player.position);
+            foreach (GameTile n in grid)
+            {
+                Gizmos.color = (n.tileMap.walkable) ? Color.white : Color.red;
+                if (path != null)
+                {
+                    if (path.Contains(n.tileMap))
+                        Gizmos.color = Color.black;
+             }
+                if (playerNode == n.tileMap)
+                {
+                    Gizmos.color = Color.cyan;
+                }
+                Gizmos.DrawCube(n.tileMap.worldPosition, Vector3.one * (nodeDiameter - .1f));
+            }
+        }
+    }
 }
